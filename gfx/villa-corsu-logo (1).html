@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Villa Corsu</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500&family=Cormorant+Garamond:wght@300;400&family=Cinzel:wght@400;600&display=swap');
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{background:#ffffff;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.scene{position:relative;width:700px;height:700px}
+canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.logo-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:10;pointer-events:none;width:320px}
+.script-la{font-family:'Dancing Script',cursive;font-weight:400;font-size:110px;color:#1a1a1a;display:block;margin-bottom:-22px;opacity:0;animation:fadeDown 1.2s cubic-bezier(.22,1,.36,1) .3s forwards}
+.villa{font-family:'Cinzel',serif;font-weight:600;font-size:68px;letter-spacing:.22em;color:#1a1a1a;display:block;line-height:1;opacity:0;animation:fadeDown 1.2s cubic-bezier(.22,1,.36,1) .55s forwards}
+.corsu{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:32px;letter-spacing:.5em;color:#1a1a1a;display:block;margin-top:6px;opacity:0;animation:fadeDown 1.2s cubic-bezier(.22,1,.36,1) .78s forwards, corsuBreathe 4s ease-in-out 2.2s infinite}
+@keyframes corsuBreathe{
+  0%,100%{transform:scale(1);letter-spacing:.5em}
+  50%{transform:scale(1.07);letter-spacing:.58em}
+}
+.tagline-wrap{display:inline-block;position:relative;margin-top:14px;opacity:0;animation:fadeDown 1.2s cubic-bezier(.22,1,.36,1) 1.05s forwards}
+.tagline{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:12px;letter-spacing:.35em;color:#ffffff;display:block;text-shadow:0 1px 6px rgba(0,0,0,0.25)}
+.tagline-line{position:absolute;left:0;bottom:-5px;width:100%;overflow:visible;pointer-events:none}
+.tagline-line line{stroke:#e63030;stroke-width:0.8;stroke-linecap:round;stroke-dasharray:200;stroke-dashoffset:200;animation:drawLine 1s cubic-bezier(.22,1,.36,1) 2.4s forwards}
+@keyframes drawLine{to{stroke-dashoffset:0}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="scene">
+  <canvas id="c"></canvas>
+  <canvas id="wave" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:6;pointer-events:none"></canvas>
+
+
+
+  <div class="logo-text">
+    <span class="script-la">la</span>
+    <span class="villa">VILLA</span>
+    <span class="corsu">CORSU</span>
+    <span class="tagline-wrap">
+      <span class="tagline">LAETITIA &amp; FRED</span>
+      <svg class="tagline-line" height="2" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="1" x2="100%" y2="1"/></svg>
+    </span>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = 700, H = 700;
+canvas.width = W; canvas.height = H;
+const CX = W/2, CY = H/2;
+const R_BASE = 192;
+const R_AMPLITUDE = 28;   // zoom in/out by ±28px
+const R_PERIOD = 8000;    // full breath every 3 seconds
+let R = R_BASE;           // live radius used by dots + arcs
+
+function ptOnCircle(deg) {
+  const a = (deg - 90) * Math.PI / 180;
+  return { x: CX + R * Math.cos(a), y: CY + R * Math.sin(a) };
+}
+
+const PALETTES = [
+  [90, 160, 200],
+  [60, 140, 190],
+  [110, 175, 210],
+  [75, 150, 195],
+  [130, 190, 220],
+  [255, 255, 255],
+];
+
+class Dot {
+  constructor(arcSpawn) {
+    this.reset(arcSpawn);
+  }
+  reset(arcSpawn) {
+    if (arcSpawn || Math.random() < 0.45) {
+      const deg = Math.random() * 360;
+      const jitter = (Math.random() - 0.5) * 28;
+      const p = ptOnCircle(deg);
+      const dx = p.x - CX, dy = p.y - CY;
+      const len = Math.sqrt(dx*dx+dy*dy);
+      this.x = CX + (dx/len) * (R + jitter);
+      this.y = CY + (dy/len) * (R + jitter);
+    } else {
+      const a = Math.random() * Math.PI * 2;
+      const r = 60 + Math.random() * 280;
+      this.x = CX + r * Math.cos(a);
+      this.y = CY + r * Math.sin(a);
+    }
+    const sp = 0.06 + Math.random() * 0.2;
+    const ang = Math.random() * Math.PI * 2;
+    this.vx = Math.cos(ang) * sp;
+    this.vy = Math.sin(ang) * sp;
+    this.size = 0.7 + Math.random() * 2.4;
+    this.maxAlpha = 0.1 + Math.random() * 0.6;
+    this.alpha = 0;
+    this.color = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+    this.life = 0;
+    this.maxLife = 250 + Math.random() * 500;
+    this.twinkle = 0.025 + Math.random() * 0.065;
+    this.phase = Math.random() * Math.PI * 2;
+    this.orbit = Math.random() < 0.3;
+    this.oAngle = Math.atan2(this.y - CY, this.x - CX);
+    this.oR = Math.sqrt((this.x-CX)**2 + (this.y-CY)**2);
+    this.oSpeed = (Math.random() - 0.5) * 0.004;
+    this.tail = Math.random() < 0.1;
+    this.burst = false;
+  }
+  update() {
+    this.life++;
+    if (this.orbit) {
+      this.oAngle += this.oSpeed;
+      this.x = CX + this.oR * Math.cos(this.oAngle);
+      this.y = CY + this.oR * Math.sin(this.oAngle);
+    } else {
+      this.x += this.vx;
+      this.y += this.vy;
+    }
+    const p = this.life / this.maxLife;
+    const tw = 0.5 + 0.5 * Math.sin(this.life * this.twinkle + this.phase);
+    if (p < 0.1) this.alpha = this.maxAlpha * (p / 0.1) * tw;
+    else if (p > 0.85) this.alpha = this.maxAlpha * ((1 - p) / 0.15) * tw;
+    else this.alpha = this.maxAlpha * tw;
+    return this.life < this.maxLife;
+  }
+  draw() {
+    const [r,g,b] = this.color;
+    const a = Math.max(0, this.alpha);
+    if (a < 0.008) return;
+
+    if (this.tail) {
+      const tx = this.x - this.vx * 35, ty = this.y - this.vy * 35;
+      const gr = ctx.createLinearGradient(this.x, this.y, tx, ty);
+      gr.addColorStop(0, `rgba(${r},${g},${b},${a*0.7})`);
+      gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      ctx.beginPath(); ctx.moveTo(this.x,this.y); ctx.lineTo(tx,ty);
+      ctx.strokeStyle = gr; ctx.lineWidth = this.size*0.5; ctx.stroke();
+    }
+
+    const hr = this.size * 5.5;
+    const halo = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, hr);
+    halo.addColorStop(0, `rgba(${r},${g},${b},${a*0.25})`);
+    halo.addColorStop(1, `rgba(${r},${g},${b},0)`);
+    ctx.beginPath(); ctx.arc(this.x, this.y, hr, 0, Math.PI*2);
+    ctx.fillStyle = halo; ctx.fill();
+
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${r},${g},${b},${a})`; ctx.fill();
+  }
+}
+
+let dots = Array.from({length: 200}, () => new Dot(false));
+let lastBurst = 0;
+
+let arcRotation = 0;
+const ARC_SPEED = 0.004;
+let arcRotation2 = Math.PI / 4; // offset start phase
+let arcDrawProgress = 0;
+let arcDrawProgress2 = 0;
+const ARC_DRAW_FRAMES = 90;
+const ARC_SPAN = (107 / 360) * Math.PI * 2;
+const R2_OFFSET = 22; // inner ring is 22px smaller
+
+function drawArcs(t) {
+  R = R_BASE + Math.sin((t / R_PERIOD) * Math.PI * 2) * R_AMPLITUDE;
+  const R2 = R - R2_OFFSET;
+
+  // --- outer ring (clockwise) ---
+  arcDrawProgress = Math.min(1, arcDrawProgress + 1 / ARC_DRAW_FRAMES);
+  const span = ARC_SPAN * arcDrawProgress;
+  const gapHalf = (Math.PI * 2 - ARC_SPAN * 2) / 2;
+  const start1 = -Math.PI / 2 + gapHalf / 2 + arcRotation;
+  const start2 = start1 + ARC_SPAN + gapHalf;
+
+  ctx.save();
+  ctx.strokeStyle = '#1c1c1c';
+  ctx.lineWidth = 1.1;
+  ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.arc(CX, CY, R, start1, start1 + span, false); ctx.stroke();
+  ctx.beginPath(); ctx.arc(CX, CY, R, start2, start2 + span, false); ctx.stroke();
+
+  // --- inner ring (counter-clockwise) ---
+  arcDrawProgress2 = Math.min(1, arcDrawProgress2 + 1 / ARC_DRAW_FRAMES);
+  const span2 = ARC_SPAN * arcDrawProgress2;
+  const s1 = -Math.PI / 2 + gapHalf / 2 + arcRotation2;
+  const s2 = s1 + ARC_SPAN + gapHalf;
+  ctx.strokeStyle = '#3a3a3a';
+  ctx.lineWidth = 0.8;
+  ctx.beginPath(); ctx.arc(CX, CY, R2, s1, s1 + span2, false); ctx.stroke();
+  ctx.beginPath(); ctx.arc(CX, CY, R2, s2, s2 + span2, false); ctx.stroke();
+
+  ctx.restore();
+  arcRotation  += ARC_SPEED;          // clockwise
+  arcRotation2 -= ARC_SPEED * 0.75;  // counter-clockwise, slightly slower
+}
+
+function arcBurst() {
+  for (let i = 0; i < 45; i++) {
+    const d = new Dot(true);
+    const dx = d.x - CX, dy = d.y - CY;
+    const len = Math.sqrt(dx*dx+dy*dy)||1;
+    const spd = 0.5 + Math.random() * 1.4;
+    const spread = (Math.random() - 0.5) * 0.8;
+    d.vx = (dx/len + spread) * spd * 0.4;
+    d.vy = (dy/len + spread) * spd * 0.4;
+    d.orbit = false;
+    d.tail = Math.random() < 0.3;
+    d.maxAlpha = 0.5 + Math.random() * 0.4;
+    d.maxLife = 90 + Math.random() * 130;
+    d.size = 1 + Math.random() * 2.5;
+    d.burst = true;
+    dots.push(d);
+  }
+}
+
+function drawBg() {
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0,0,W,H);
+}
+
+function drawPulse(t) {
+  [0, 0.33, 0.66].forEach(offset => {
+    const ph = ((t/3200 + offset) % 1);
+    const r = R + ph * 40;
+    const a = (1 - ph) * 0.1;
+    ctx.beginPath(); ctx.arc(CX,CY,r,0,Math.PI*2);
+    ctx.strokeStyle = `rgba(28,28,28,${a})`; ctx.lineWidth = 0.8; ctx.stroke();
+  });
+}
+
+function drawConnections() {
+  const live = dots.filter(d => d.alpha > 0.18);
+  for (let i = 0; i < Math.min(live.length, 120); i++) {
+    for (let j = i+1; j < Math.min(live.length, 120); j++) {
+      const dx = live[i].x - live[j].x, dy = live[i].y - live[j].y;
+      const dist = Math.sqrt(dx*dx+dy*dy);
+      if (dist < 52) {
+        ctx.beginPath();
+        ctx.moveTo(live[i].x, live[i].y);
+        ctx.lineTo(live[j].x, live[j].y);
+        ctx.strokeStyle = `rgba(28,28,28,${(1-dist/52)*0.065})`;
+        ctx.lineWidth = 0.35; ctx.stroke();
+      }
+    }
+  }
+}
+
+function loop(t) {
+  drawBg();
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(CX, CY, R - 1, 0, Math.PI * 2);
+  ctx.clip();
+  drawPulse(t);
+  ctx.restore();
+  drawArcs(t);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// ── SEA WAVE OVERLAY ──────────────────────────────────────────────────────────
+const wc = document.getElementById('wave');
+const wctx = wc.getContext('2d');
+wc.width = W; wc.height = H;
+
+const WAVE_LAYERS = [
+  { amp: 7,  freq: 0.022, speed: 0.009, yOff: 0.62, alpha: 0.32, color: [90, 160, 200],  phase: 0 },
+  { amp: 5,  freq: 0.030, speed: 0.013, yOff: 0.65, alpha: 0.22, color: [60, 140, 190],  phase: 1.8 },
+  { amp: 9,  freq: 0.016, speed: 0.0065,yOff: 0.59, alpha: 0.18, color: [110, 175, 210], phase: 0.9 },
+  { amp: 4,  freq: 0.042, speed: 0.019, yOff: 0.67, alpha: 0.15, color: [75, 150, 195],  phase: 3.1 },
+  { amp: 11, freq: 0.012, speed: 0.0045,yOff: 0.57, alpha: 0.10, color: [130, 190, 220], phase: 2.3 },
+];
+
+const FOAM = Array.from({length: 28}, (_, i) => ({
+  xFrac: i / 27,
+  offset: Math.random() * Math.PI * 2,
+  size: 1 + Math.random() * 2.2,
+  alpha: 0.25 + Math.random() * 0.45,
+  speed: 0.008 + Math.random() * 0.016,
+  drift: (Math.random() - 0.5) * 0.0006,
+}));
+
+function waveY(layer, x, t) {
+  return layer.yOff * H
+    + Math.sin(x * layer.freq + t * layer.speed + layer.phase) * layer.amp
+    + Math.sin(x * layer.freq * 1.7 + t * layer.speed * 0.6 + layer.phase + 1.1) * layer.amp * 0.45
+    + Math.sin(x * layer.freq * 0.5 + t * layer.speed * 1.4 + layer.phase + 2.4) * layer.amp * 0.3;
+}
+
+function drawWaves(t) {
+  wctx.clearRect(0, 0, W, H);
+  wctx.save();
+  // Clip strictly inside the circle (using current dynamic R)
+  wctx.beginPath();
+  wctx.arc(CX, CY, R - 1, 0, Math.PI * 2);
+  wctx.clip();
+
+  WAVE_LAYERS.forEach(layer => {
+    const [r, g, b] = layer.color;
+    wctx.beginPath();
+    for (let x = 0; x <= W; x += 3) {
+      const y = waveY(layer, x, t);
+      x === 0 ? wctx.moveTo(x, y) : wctx.lineTo(x, y);
+    }
+    wctx.lineTo(W, H); wctx.lineTo(0, H); wctx.closePath();
+    wctx.fillStyle = `rgba(${r},${g},${b},${layer.alpha})`;
+    wctx.fill();
+
+    wctx.beginPath();
+    for (let x = 0; x <= W; x += 3) {
+      const y = waveY(layer, x, t);
+      x === 0 ? wctx.moveTo(x, y) : wctx.lineTo(x, y);
+    }
+    wctx.strokeStyle = `rgba(${Math.min(r+30,255)},${Math.min(g+20,255)},${Math.min(b+10,255)},${layer.alpha * 0.6})`;
+    wctx.lineWidth = 0.8;
+    wctx.stroke();
+  });
+
+  const primary = WAVE_LAYERS[0];
+  FOAM.forEach(f => {
+    f.xFrac += f.drift;
+    if (f.xFrac < 0) f.xFrac += 1;
+    if (f.xFrac > 1) f.xFrac -= 1;
+    const x = f.xFrac * W;
+    const y = waveY(primary, x, t) - f.size * 0.5 + Math.sin(t * f.speed * 3 + f.offset) * 2;
+    const pulse = 0.6 + 0.4 * Math.sin(t * f.speed + f.offset);
+    wctx.beginPath();
+    wctx.arc(x, y, f.size * pulse, 0, Math.PI * 2);
+    wctx.fillStyle = `rgba(255,255,255,${f.alpha * pulse})`;
+    wctx.fill();
+  });
+
+  wctx.restore();
+}
+
+function waveLoop(t) { drawWaves(t); requestAnimationFrame(waveLoop); }
+requestAnimationFrame(waveLoop);
+
+document.fonts.ready.then(() => {
+  const taglineEl = document.querySelector('.tagline');
+  const lineEl = document.querySelector('.tagline-line line');
+  if (taglineEl && lineEl) {
+    const w = taglineEl.offsetWidth;
+    const half = w / 2;
+    const x1 = w / 4;
+    const x2 = x1 + half;
+    lineEl.setAttribute('x1', x1);
+    lineEl.setAttribute('x2', x2);
+    lineEl.style.strokeDasharray = half;
+    lineEl.style.strokeDashoffset = half;
+  }
+});
+</script>
+</body>
+</html>
