@@ -1,0 +1,15 @@
+liens:
+https://bonifacio.fr/autour-de-bonifacio/les-plus-belles-plages-du-sud-corse/
+
+https://www.corsica-aventure.com/fr/randonnee-corse
+
+https://www.leblogcashpistache.fr/ou-aller-en-corse-du-sud-en-1-semaine/
+
+https://trouve-ton-voyage.com/une-escapade-en-corse-du-sud/
+
+https://asantagiulia.com/guide/bien-manger/
+
+maj:
+-section Sartène aux alentours
+-remplacer gfx icon par bandeau photo
+

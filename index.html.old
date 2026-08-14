@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1612">
+<title>La Villa Corsu — Le Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f0e8;
+  --bg2: #ede8de;
+  --card: #f9f6f0;
+  --gold: #9a8660;
+  --gold-light: #b8a07a;
+  --gold-pale: #e8dfc8;
+  --dark: #1a1612;
+  --mid: #3d3428;
+  --muted: #7a6e5e;
+  --white: #faf8f4;
+  --red: #c0392b;
+  --green: #4a6741;
+  --radius: 16px;
+  --shadow: 0 2px 20px rgba(26,22,18,0.08);
+  --shadow-lg: 0 8px 40px rgba(26,22,18,0.14);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--dark); overflow-x:hidden; font-size:16px; line-height:1.6; }
+
+/* ── TOPBAR ── */
+.topbar {
+  position:sticky; top:0; z-index:200;
+  background:rgba(26,22,18,0.96);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 20px; gap:12px;
+}
+.topbar-logo { display:flex; align-items:center; gap:10px; }
+.logo-video { width:62px; height:62px; flex-shrink:0; border-radius:8px; object-fit:cover; }
+.logo-text { font-family:'Playfair Display',serif; font-size:1rem; color:var(--white); letter-spacing:.05em; line-height:1.2; }
+.logo-text small { display:block; font-family:'Outfit',sans-serif; font-size:.62rem; font-weight:300; letter-spacing:.2em; color:var(--gold-light); text-transform:uppercase; }
+.lang-toggle { display:flex; gap:6px; }
+.lang-btn { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:8px; padding:6px 10px; font-size:1.1rem; cursor:pointer; transition:background .2s; line-height:1; }
+.lang-btn.active { background:var(--gold); border-color:var(--gold); }
+.lang-btn:active { transform:scale(.93); }
+
+/* ── HERO ── */
+.hero {
+  background:#000;
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  padding:28px 24px;
+}
+.hero-logo-img {
+  position:relative;
+  z-index:2;
+  width:min(420px, 85vw);
+  display:block;
+}
+
+/* Marquee hero */
+.hero-marquee {
+  position:absolute; inset:0; z-index:3;
+  display:flex; align-items:center;
+  overflow:hidden; pointer-events:none;
+}
+.hero-marquee-track {
+  display:flex; gap:80px; white-space:nowrap;
+  animation:marquee 36s linear infinite;
+  will-change:transform;
+}
+.hero-marquee-track span {
+  font-family:'Playfair Display',serif;
+  font-size:var(--hero-h, 120px);
+  font-weight:400; font-style:italic;
+  color:rgba(255,255,255,.1);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  user-select:none;
+  line-height:1;
+}
+@keyframes marquee {
+  from { transform:translateX(0); }
+  to   { transform:translateX(-50%); }
+}
+.hero-content {
+  position:absolute;
+  bottom:16px; left:24px;
+  z-index:3;
+  width:calc(100% - 48px);
+}
+.hero-bg {
+  position:absolute; inset:0;
+  background:#000;
+}
+.hero-grid {
+  position:absolute; inset:0; opacity:.04;
+  background-image:repeating-linear-gradient(0deg,var(--gold) 0,var(--gold) 1px,transparent 0,transparent 40px),
+                   repeating-linear-gradient(90deg,var(--gold) 0,var(--gold) 1px,transparent 0,transparent 40px);
+  background-color:#000;
+}
+.hero-content { position:relative; z-index:2; width:100%; }
+.hero-badge {
+  display:inline-block; font-size:.65rem; font-weight:500; letter-spacing:.25em;
+  text-transform:uppercase; color:var(--gold-light);
+  border:1px solid rgba(154,134,96,.35); border-radius:20px; padding:5px 12px; margin-bottom:14px;
+}
+.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.2rem,8vw,3.4rem); font-weight:400; color:var(--white); line-height:1.05; margin-bottom:6px; }
+.hero h1 em { font-style:italic; color:var(--gold-light); }
+.hero-sub { font-size:.85rem; font-weight:300; color:rgba(250,248,244,.45); margin-top:8px; }
+
+/* ── SECTIONS ── */
+.section { padding:28px 20px; }
+.section-header { margin-bottom:18px; }
+.chip { display:inline-block; font-size:.6rem; font-weight:600; letter-spacing:.25em; text-transform:uppercase; color:var(--gold); background:rgba(154,134,96,.12); border-radius:20px; padding:4px 10px; margin-bottom:8px; }
+.section-title { font-family:'Playfair Display',serif; font-size:clamp(1.5rem,5vw,2rem); font-weight:400; color:var(--dark); line-height:1.2; }
+.section-title em { font-style:italic; color:var(--gold); }
+.divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold-pale),transparent); margin:4px 20px; }
+
+/* ── WELCOME ── */
+.welcome-card {
+  background:var(--dark); border-radius:var(--radius); padding:28px 24px;
+  margin:0 20px; position:relative; overflow:hidden;
+}
+.welcome-card::before {
+  content:''; position:absolute; top:-40px; right:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:radial-gradient(circle,rgba(154,134,96,.2) 0%,transparent 70%); pointer-events:none;
+}
+.welcome-card p { font-size:.95rem; font-weight:300; color:rgba(250,248,244,.75); line-height:1.8; margin-bottom:20px; }
+.welcome-card p strong { color:var(--white); font-weight:500; }
+.contact-btns { display:flex; flex-direction:column; gap:10px; }
+.contact-btn { display:flex; align-items:center; gap:14px; background:var(--gold); border-radius:12px; padding:14px 18px; text-decoration:none; transition:all .2s; }
+.contact-btn:active { transform:scale(.97); filter:brightness(.93); }
+.cbtn-icon { width:38px; height:38px; background:rgba(255,255,255,.18); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+.cbtn-text .label { font-size:.7rem; font-weight:400; color:rgba(255,255,255,.7); letter-spacing:.1em; text-transform:uppercase; }
+.cbtn-text .name { font-size:1rem; font-weight:600; color:white; }
+.cbtn-text .number { font-size:.85rem; font-weight:500; color:rgba(255,255,255,.85); letter-spacing:.05em; }
+
+/* ── ADDRESS ── */
+.address-card { background:var(--card); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.addr-map { height:150px; background:linear-gradient(135deg,#2a3520,#3a4a2a,#2a3520); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.addr-map::before { content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg,rgba(154,134,96,.08) 0,rgba(154,134,96,.08) 1px,transparent 0,transparent 30px),repeating-linear-gradient(90deg,rgba(154,134,96,.08) 0,rgba(154,134,96,.08) 1px,transparent 0,transparent 30px); }
+.map-pin { font-size:2.4rem; position:relative; z-index:2; filter:drop-shadow(0 4px 12px rgba(0,0,0,.4)); animation:bounce 2s ease-in-out infinite; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.addr-body { padding:20px; }
+.addr-body h3 { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:500; margin-bottom:6px; }
+.addr-body p { font-size:.88rem; color:var(--muted); line-height:1.7; margin-bottom:14px; }
+.addr-steps { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+.addr-step { display:flex; align-items:center; gap:12px; background:var(--bg2); border-radius:10px; padding:10px 14px; font-size:.85rem; color:var(--mid); }
+.step-icon { font-size:1.1rem; flex-shrink:0; }
+.maps-btn { display:flex; align-items:center; justify-content:center; gap:8px; background:var(--dark); color:white; border-radius:10px; padding:13px; text-decoration:none; font-size:.85rem; font-weight:500; transition:background .2s; }
+.maps-btn:active { background:var(--gold); }
+
+/* ── WIFI ── */
+.wifi-card { background:var(--dark); border-radius:var(--radius); padding:22px 20px; box-shadow:var(--shadow-lg); }
+.wifi-head { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+.wifi-ico { width:44px; height:44px; background:var(--gold); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+.wifi-ttl { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--white); }
+.wifi-ttl small { display:block; font-family:'Outfit',sans-serif; font-size:.72rem; font-weight:300; color:var(--gold-light); }
+.wifi-row { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:13px 16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.wlabel { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(250,248,244,.4); }
+.wvalue { font-size:.95rem; font-weight:500; color:var(--white); }
+.wvalue.mono { font-family:'Courier New',monospace; font-size:.88rem; color:var(--gold-light); }
+.copy-btn { background:var(--gold); border:none; border-radius:8px; padding:10px 12px; font-family:'Outfit',sans-serif; font-size:.82rem; font-weight:500; color:white; cursor:pointer; transition:all .2s; width:100%; margin-top:4px; display:block; text-align:center; text-decoration:none; }
+.copy-btn:active { transform:scale(.96); }
+.wifi-qr-wrap { margin-top:18px; display:flex; flex-direction:column; align-items:center; gap:8px; }
+.wifi-qr-label { font-size:.68rem; font-weight:400; letter-spacing:.15em; text-transform:uppercase; color:rgba(250,248,244,.35); }
+.wifi-qr-img { width:148px; height:148px; border-radius:12px; background:white; padding:10px; display:block; }
+
+/* ── STEP LIST (arrivée) ── */
+.step-card { background:var(--card); border-radius:var(--radius); padding:22px 20px; box-shadow:var(--shadow); }
+.step-list { display:flex; flex-direction:column; }
+.step-item { display:flex; gap:16px; padding:14px 0; border-bottom:1px solid var(--bg2); }
+.step-item:last-child { border-bottom:none; }
+.step-num-col { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+.step-num { width:34px; height:34px; border-radius:50%; background:var(--gold); color:white; font-size:.85rem; font-weight:600; display:flex; align-items:center; justify-content:center; }
+.step-line { width:1px; flex:1; background:var(--gold-pale); margin-top:4px; }
+.step-item:last-child .step-line { display:none; }
+.step-body { flex:1; padding-top:4px; }
+.step-body h4 { font-size:.85rem; font-weight:600; color:var(--dark); margin-bottom:3px; text-transform:uppercase; letter-spacing:.06em; }
+.step-body p { font-size:.85rem; color:var(--muted); line-height:1.6; }
+.code-hl { display:inline-block; background:var(--dark); color:var(--gold-light); font-family:'Courier New',monospace; font-size:1.3rem; font-weight:700; letter-spacing:.25em; padding:7px 16px; border-radius:8px; margin-top:8px; }
+
+/* ── DÉPART ── */
+.depart-card { background:var(--card); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); }
+.dep-item { display:flex; align-items:flex-start; gap:14px; padding:12px 0; border-bottom:1px solid var(--bg2); }
+.dep-item:last-child { border-bottom:none; }
+.dep-ico { width:40px; height:40px; background:var(--bg2); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+.dep-body h4 { font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--dark); margin-bottom:2px; }
+.dep-body p { font-size:.83rem; color:var(--muted); line-height:1.6; }
+
+/* ── RULES ── */
+.rules-list { display:flex; flex-direction:column; gap:10px; }
+.rule-card { background:var(--card); border-radius:var(--radius); padding:16px 18px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow); }
+.rule-ico { font-size:1.6rem; flex-shrink:0; width:44px; text-align:center; }
+.rule-body h4 { font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--red); margin-bottom:2px; }
+.rule-body p { font-size:.83rem; color:var(--muted); line-height:1.5; }
+
+/* ── IMPORTANT ── */
+.imp-card { background:var(--card); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); border-left:4px solid var(--gold); margin-bottom:10px; }
+.imp-card:last-child { margin-bottom:0; }
+.imp-card h4 { font-size:.8rem; font-weight:600; text-transform:uppercase; letter-spacing:.1em; color:var(--gold); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.imp-card p { font-size:.85rem; color:var(--mid); line-height:1.7; }
+
+/* ── LOISIRS ── */
+.loisirs-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.loisir-card { background:var(--card); border-radius:var(--radius); padding:14px 10px; box-shadow:var(--shadow); text-align:center; }
+.loisir-card:active { transform:scale(.96); }
+.loisir-card .ico { font-size:1.6rem; display:block; margin-bottom:6px; }
+.loisir-card h4 { font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--dark); margin-bottom:4px; }
+.loisir-card p { font-size:.72rem; color:var(--muted); line-height:1.4; }
+
+/* ── TORTUES ── */
+.tortues-wrap { background:linear-gradient(135deg,#2d4a24,#3a5c2e); border-radius:var(--radius); padding:24px 20px; overflow:hidden; position:relative; }
+.tortues-wrap::before { content:'🌿'; position:absolute; font-size:6rem; opacity:.07; top:-10px; right:-10px; transform:rotate(20deg); pointer-events:none; }
+.tortues-wrap .chip { background:rgba(255,255,255,.12); color:rgba(255,255,255,.7); }
+.tortues-wrap .section-title { color:white; margin-bottom:6px; }
+.tortues-wrap .section-sub { font-size:.88rem; color:rgba(255,255,255,.6); margin-bottom:16px; }
+.tortues-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.tortue-item { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:14px; }
+.tortue-item .ico { font-size:1.5rem; display:block; margin-bottom:8px; }
+.tortue-item h4 { font-size:.76rem; font-weight:600; color:#a8d48a; text-transform:uppercase; letter-spacing:.07em; margin-bottom:4px; }
+.tortue-item p { font-size:.8rem; color:rgba(255,255,255,.65); line-height:1.5; }
+
+/* ── ADRESSES ── */
+.adresses-list { display:flex; flex-direction:column; gap:12px; }
+.adr-card { background:var(--card); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); }
+.adr-card[onclick] { transition:transform .2s, box-shadow .2s; }
+.adr-card[onclick]:active { transform:scale(.97); box-shadow:var(--shadow-lg); }
+.adr-card[onclick] .adr-head h3::after { content:' ↗'; font-size:.75rem; color:var(--gold); opacity:.6; }
+.adr-head { display:flex; align-items:center; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--bg2); }
+.adr-flag { width:54px; height:54px; border-radius:12px; background:var(--bg2); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; object-fit:cover; }
+.adr-city-img { display:none; }
+.adr-head h3 { font-family:'Playfair Display',serif; font-size:1rem; font-weight:500; color:var(--dark); flex:1; }
+.adr-items { display:flex; flex-direction:column; gap:6px; }
+.adr-item { font-size:.85rem; color:var(--mid); line-height:1.5; padding:3px 0; display:flex; align-items:baseline; gap:6px; }
+.adr-item::before { content:'→'; color:var(--gold); font-size:.7rem; flex-shrink:0; }
+.adr-item a { color:var(--gold); text-decoration:none; font-weight:500; }
+.warn-badge { display:inline-flex; align-items:center; gap:6px; background:#fff3cd; border:1px solid #ffc107; border-radius:8px; padding:6px 12px; font-size:.78rem; font-weight:600; color:#856404; margin-top:10px; }
+
+/* ── LIENS ── */
+
+/* POI Map button */
+.poi-btn {
+  display:flex; align-items:center; gap:12px;
+  background:linear-gradient(135deg, var(--gold) 0%, #7a6840 100%);
+  border-radius:14px; padding:14px 16px;
+  text-decoration:none; margin-bottom:14px;
+  box-shadow:0 4px 18px rgba(154,134,96,.35);
+  transition:transform .15s, box-shadow .15s;
+}
+.poi-btn:active { transform:scale(.97); box-shadow:0 2px 10px rgba(154,134,96,.2); }
+.poi-btn-ico { font-size:2rem; flex-shrink:0; }
+.poi-btn-body { flex:1; display:flex; flex-direction:column; gap:2px; }
+.poi-btn-body strong { font-size:.9rem; font-weight:600; color:#fff; }
+.poi-btn-body span { font-size:.75rem; color:rgba(255,255,255,.75); }
+.poi-btn-arrow { font-size:1.1rem; color:rgba(255,255,255,.8); flex-shrink:0; }
+.liens-list { display:flex; flex-direction:column; gap:6px; }
+.lien-card { background:var(--card); border-radius:10px; padding:10px 14px; box-shadow:var(--shadow); display:flex; align-items:center; gap:10px; text-decoration:none; }
+.lien-card:active { transform:scale(.97); }
+.lien-thumb { width:34px; height:34px; border-radius:8px; background:var(--bg2); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+.lien-body h4 { font-size:.8rem; font-weight:600; color:var(--dark); margin-bottom:0; text-decoration:underline; text-decoration-color:var(--gold); }
+.lien-body p { font-size:.72rem; color:var(--muted); line-height:1.3; }
+.lien-arrow { margin-left:auto; font-size:.85rem; color:var(--gold); flex-shrink:0; }
+
+/* ── VILLA PRÉSENTATION ── */
+.villa-intro { background:var(--dark); padding:32px 20px 28px; }
+.villa-intro .chip { background:rgba(154,134,96,.2); }
+.villa-intro .section-title { color:var(--white); margin-bottom:14px; }
+.villa-desc { font-size:.92rem; font-weight:300; color:rgba(250,248,244,.65); line-height:1.85; margin-bottom:22px; }
+.villa-desc strong { color:var(--gold-light); font-weight:500; }
+
+.villa-distances {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:24px;
+}
+.dist-item {
+  background:rgba(255,255,255,.05); border:1px solid rgba(154,134,96,.2);
+  border-radius:12px; padding:14px 10px; text-align:center;
+}
+.dist-min { font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--gold-light); line-height:1; }
+.dist-unit { font-size:.58rem; color:var(--gold-light); letter-spacing:.12em; text-transform:uppercase; }
+.dist-label { font-size:.72rem; color:rgba(250,248,244,.45); margin-top:4px; }
+
+.villa-specs-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px;
+}
+.spec-item {
+  background:rgba(255,255,255,.05); border:1px solid rgba(154,134,96,.15);
+  border-radius:12px; padding:14px 14px; display:flex; align-items:flex-start; gap:12px;
+}
+.spec-ico { font-size:1.4rem; flex-shrink:0; line-height:1; margin-top:2px; }
+.spec-body h4 { font-size:.76rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--gold-light); margin-bottom:3px; }
+.spec-body p { font-size:.8rem; color:rgba(250,248,244,.55); line-height:1.5; }
+
+/* photo gallery */
+
+/* Villa photo gallery */
+.gallery-wrap {
+  position:relative;
+  display:flex; align-items:center; gap:0;
+}
+.gallery-scroll {
+  flex:1; display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;
+  scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+}
+.gallery-scroll::-webkit-scrollbar { display:none; }
+.gallery-img {
+  width:65vw; max-width:260px; height:180px;
+  border-radius:12px; object-fit:cover; flex-shrink:0;
+  scroll-snap-align:start;
+  border:1px solid rgba(154,134,96,.15);
+}
+/* Flèches de navigation — visibles uniquement à la souris */
+.gallery-arrow {
+  display:none;
+  flex-shrink:0;
+  width:40px; height:40px;
+  background:rgba(26,22,18,.82); backdrop-filter:blur(8px);
+  border:1px solid rgba(154,134,96,.4); border-radius:50%;
+  color:var(--gold-light); font-size:1.1rem; line-height:1;
+  cursor:pointer; z-index:10;
+  align-items:center; justify-content:center;
+  transition:background .2s, opacity .2s;
+  padding:0;
+}
+.gallery-arrow:hover { background:var(--gold); color:white; }
+.gallery-arrow:active { opacity:.7; }
+.gallery-arrow.hidden { opacity:0; pointer-events:none; }
+@media (hover:hover) and (pointer:fine) {
+  .gallery-arrow { display:flex; }
+}
+
+.airbnb-btn {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  background:linear-gradient(135deg,#FF5A5F,#E0334C);
+  color:white; border-radius:12px; padding:16px 20px;
+  text-decoration:none; font-size:.9rem; font-weight:600;
+  margin-top:22px; transition:all .2s;
+  box-shadow: 0 4px 20px rgba(255,90,95,.3);
+}
+.airbnb-btn:active { transform:scale(.97); }
+.airbnb-stars { display:flex; align-items:center; gap:6px; font-size:.8rem; color:rgba(255,255,255,.8); margin-top:6px; }
+
+.airbnb-meta {
+  background:rgba(255,90,95,.08); border:1px solid rgba(255,90,95,.2);
+  border-radius:12px; padding:14px 16px; margin-top:14px;
+}
+.airbnb-meta-row { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.airbnb-meta-row:last-child { margin-bottom:0; }
+.airbnb-meta-ico { font-size:1.1rem; flex-shrink:0; }
+.airbnb-meta-text { font-size:.82rem; color:rgba(250,248,244,.6); }
+.airbnb-meta-text strong { color:var(--gold-light); }
+
+/* ── FOOTER ── */
+.footer { background:var(--dark); padding:36px 20px 48px; text-align:center; }
+.footer-video { width:160px; height:160px; object-fit:cover; border-radius:8px; margin:0 auto 12px; display:block; }
+.footer-title { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--white); letter-spacing:.05em; margin-bottom:4px; }
+.footer-sub { font-size:.7rem; font-weight:300; letter-spacing:.25em; text-transform:uppercase; color:var(--gold-light); margin-bottom:20px; }
+.footer-msg { font-size:.85rem; font-weight:300; color:rgba(250,248,244,.45); line-height:1.8; max-width:320px; margin:0 auto 20px; }
+.footer-divider { height:1px; background:rgba(154,134,96,.2); margin:20px 0; }
+.footer-note { font-size:.7rem; color:rgba(250,248,244,.18); letter-spacing:.08em; }
+
+/* ── NAV PILLS ── */
+.nav-pills {
+  position:sticky; top:64px; z-index:150;
+  background:rgba(244,240,232,0.97);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--gold-pale);
+  display:flex; gap:8px; overflow-x:auto; padding:10px 16px;
+  scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+}
+.nav-pills::-webkit-scrollbar { display:none; }
+.nav-pill {
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  background:var(--card); border:1px solid var(--gold-pale);
+  border-radius:14px; padding:10px 14px;
+  text-decoration:none; flex-shrink:0;
+  scroll-snap-align:start;
+  transition:background .2s, border-color .2s, transform .15s;
+  min-width:72px;
+}
+.nav-pill:active { transform:scale(.93); }
+.nav-pill.active { background:var(--dark); border-color:var(--dark); }
+.nav-pill .pill-ico { font-size:1.3rem; line-height:1; }
+.nav-pill .pill-label {
+  font-size:.58rem; font-weight:500; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--muted); text-align:center;
+  white-space:nowrap;
+}
+.nav-pill.active .pill-label { color:var(--gold-light); }
+
+/* ── REVEAL ── */
+.reveal { opacity:1; transform:none; }
+.reveal.will-animate { opacity:0; transform:translateY(18px); transition:opacity .55s ease,transform .55s ease; }
+.reveal.will-animate.in { opacity:1; transform:none; }
+
+/* ── FAB ── */
+.fab { position:fixed; bottom:24px; right:20px; width:46px; height:46px; background:var(--dark); border:1px solid rgba(154,134,96,.35); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:var(--gold-light); cursor:pointer; z-index:100; opacity:0; transform:translateY(10px); transition:opacity .3s,transform .3s; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+.fab.visible { opacity:1; transform:none; }
+.fab:active { transform:scale(.9) !important; }
+
+/* ── RESPONSIVE ── */
+/* ── Mobile small (<380px) ── */
+@media(max-width:380px){
+  body { font-size:14px; }
+  .topbar { padding:10px 14px; gap:8px; }
+  .logo-video { width:48px; height:48px; }
+  .logo-text { font-size:.85rem; }
+  .section { padding:20px 14px; }
+  .villa-intro { padding:20px 14px 16px; }
+  .hero { padding:24px 16px 20px; }
+  .section-title { font-size:1.3rem; }
+  .contact-btn { padding:12px; }
+  .cbtn-text .name { font-size:.9rem; }
+  .loisirs-grid { grid-template-columns:repeat(3,1fr); }
+  .tortues-grid { grid-template-columns:repeat(2,1fr); }
+  .nav-pill { min-width:60px; padding:6px 10px; }
+  .nav-pill .pill-ico { font-size:1.1rem; }
+  .pill-label { font-size:.52rem; }
+  .wifi-qr-img { width:120px; height:120px; }
+  .gallery-img { width:78vw; height:160px; }
+  .hero-logo-img { width:min(200px,50vw); }
+  .villa-distances { grid-template-columns:1fr 1fr; }
+  .villa-specs-grid { grid-template-columns:1fr 1fr; }
+}
+@media(min-width:600px){
+  .section{padding:36px 28px;}
+  .welcome-card{margin:0 28px;}
+  .divider{margin:4px 28px;}
+  .contact-btns{flex-direction:row;}
+  .contact-btn{flex:1;}
+  .loisirs-grid{grid-template-columns:repeat(5,1fr);}
+  .tortues-grid{grid-template-columns:repeat(4,1fr);}
+  .villa-intro{padding:36px 28px 28px;}
+  .villa-specs-grid{grid-template-columns:repeat(3,1fr);}
+  .gallery-img{width:44vw;max-width:320px;}
+  .villa-distances{grid-template-columns:repeat(3,1fr);}
+}
+@media(min-width:860px){
+  body{max-width:760px;margin:0 auto;}
+  .topbar{padding:16px 32px;}
+  .hero{max-height:300px;padding:36px 40px;}
+}
+
+/* Lightbox */
+#lb {
+  display:flex; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,.93);
+  align-items:center; justify-content:center; padding:20px;
+  opacity:0; pointer-events:none; transition:opacity .22s;
+}
+#lb.on { opacity:1; pointer-events:all; }
+#lb img { max-width:100%; max-height:88vh; border-radius:12px; object-fit:contain; box-shadow:0 8px 50px rgba(0,0,0,.6); user-select:none; }
+#lb-close {
+  position:absolute; top:14px; right:18px;
+  background:none; border:none; color:#fff;
+  font-size:2rem; cursor:pointer; line-height:1; opacity:.75;
+}
+#lb-close:hover { opacity:1; }
+</style>
+<script>
+function lbShow(src, alt) {
+  var el = document.getElementById('lb');
+  var im = document.getElementById('lb-img');
+  if (!el || !im) return;
+  im.src = src; im.alt = alt || '';
+  el.classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function lbHide() {
+  var el = document.getElementById('lb');
+  if (!el) return;
+  el.classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+function setLang(lang) {
+  document.querySelectorAll('[data-fr],[data-en]').forEach(function(el) {
+    var val = el.getAttribute('data-' + lang);
+    if (val === null) return;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.placeholder = val;
+    } else {
+      el.innerHTML = val;
+    }
+  });
+  document.querySelectorAll('.lang-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes("'" + lang + "'"));
+  });
+  localStorage.setItem('lang', lang);
+}
+// Auto-restore language
+(function() {
+  var saved = localStorage.getItem('lang');
+  if (saved) setLang(saved);
+})();
+
+
+// Ajuste la taille du texte marquee à la hauteur du hero
+function setMarqueeSize() {
+  var hero = document.querySelector('.hero');
+  if (!hero) return;
+  var h = hero.offsetHeight;
+  if (h === 0) return;
+  hero.style.setProperty('--hero-h', h + 'px');
+}
+window.addEventListener('load', setMarqueeSize);
+window.addEventListener('resize', setMarqueeSize);
+
+function galleryScroll(dir) {
+  var el = document.getElementById('gallery-scroll');
+  if (!el) return;
+  var img = el.querySelector('.gallery-img');
+  var step = img ? img.offsetWidth + 10 : 260;
+  el.scrollBy({ left: dir === 'next' ? step : -step, behavior: 'smooth' });
+}
+function updateGalleryArrows() {
+  var el = document.getElementById('gallery-scroll');
+  var prev = document.getElementById('gallery-prev');
+  var next = document.getElementById('gallery-next');
+  if (!el || !prev || !next) return;
+  prev.classList.toggle('hidden', el.scrollLeft <= 4);
+  next.classList.toggle('hidden', el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var g = document.getElementById('gallery-scroll');
+  if (g) {
+    g.addEventListener('scroll', updateGalleryArrows, {passive:true});
+    updateGalleryArrows();
+    g.querySelectorAll('.gallery-img').forEach(function(img) {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function(e) {
+        e.stopPropagation();
+        lbShow(this.src, this.alt);
+      });
+    });
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') lbHide();
+  });});
+
+
+</script>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-logo">
+    <img class="logo-video" src="gfx/logo.png" alt="La Villa Corsu">
+    <div class="logo-text">
+      Villa Corsu — Le Guide
+      <small>Laëtitia &amp; Fred</small>
+    </div>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('fr')">🇫🇷</button>
+    <button class="lang-btn" onclick="setLang('en')">🇬🇧</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-marquee">
+    <div class="hero-marquee-track">
+      <span>LE GUIDE VILLA CORSU</span>
+      <span>LE GUIDE VILLA CORSU</span>
+      <span>LE GUIDE VILLA CORSU</span>
+      <span>LE GUIDE VILLA CORSU</span>
+    </div>
+  </div>
+  <video class="hero-logo-img" src="gfx/villa_corsu_noir.mp4" autoplay loop muted playsinline></video>
+</section>
+
+<!-- NAV PILLS -->
+<nav class="nav-pills" id="nav-pills">
+  <a class="nav-pill" href="#la-villa" data-section="la-villa">
+    <span class="pill-ico">🏡</span>
+    <span class="pill-label" data-fr="La Villa" data-en="The Villa">La Villa</span>
+  </a>
+  <a class="nav-pill" href="#s-adresse" data-section="s-adresse">
+    <span class="pill-ico">📍</span>
+    <span class="pill-label" data-fr="Adresse" data-en="Address">Adresse</span>
+  </a>
+  <a class="nav-pill" href="#s-arrivee" data-section="s-arrivee">
+    <span class="pill-ico">🔑</span>
+    <span class="pill-label" data-fr="Arrivée" data-en="Check-in">Arrivée</span>
+  </a>
+  <a class="nav-pill" href="#s-wifi" data-section="s-wifi">
+    <span class="pill-ico">📶</span>
+    <span class="pill-label">WiFi</span>
+  </a>
+  <a class="nav-pill" href="#s-reglement" data-section="s-reglement">
+    <span class="pill-ico">📋</span>
+    <span class="pill-label" data-fr="Règles" data-en="Rules">Règles</span>
+  </a>
+  <a class="nav-pill" href="#s-infos" data-section="s-infos">
+    <span class="pill-ico">⚠️</span>
+    <span class="pill-label" data-fr="Infos" data-en="Infos">Infos</span>
+  </a>
+  <a class="nav-pill" href="#s-depart" data-section="s-depart">
+    <span class="pill-ico">🕙</span>
+    <span class="pill-label" data-fr="Départ" data-en="Checkout">Départ</span>
+  </a>
+  <a class="nav-pill" href="#s-loisirs" data-section="s-loisirs">
+    <span class="pill-ico">🎯</span>
+    <span class="pill-label" data-fr="Loisirs" data-en="Fun">Loisirs</span>
+  </a>
+  <a class="nav-pill" href="#s-adresses" data-section="s-adresses">
+    <span class="pill-ico">🗺️</span>
+    <span class="pill-label" data-fr="Aux alentours" data-en="Nearby">Alentours</span>
+  </a></nav>
+
+<!-- VILLA PRÉSENTATION -->
+<div class="villa-intro reveal" id="la-villa">
+  <div class="villa-distances">
+    <div class="dist-item">
+      <div class="dist-min">30<span class="dist-unit">min</span></div>
+      <div class="dist-label">Bonifacio</div>
+    </div>
+    <div class="dist-item">
+      <div class="dist-min">35<span class="dist-unit">min</span></div>
+      <div class="dist-label">Porto-Vecchio</div>
+    </div>
+    <div class="dist-item">
+      <div class="dist-min">15<span class="dist-unit">min</span></div>
+      <div class="dist-label" data-fr="Aéroport Figari" data-en="Figari Airport">Aéroport Figari</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="divider"></div>
+
+<!-- BIENVENUE -->
+<div class="section" style="padding-bottom:0">
+  <div class="welcome-card reveal">
+    <p data-fr="Bienvenue dans la <strong>Villa Corsu</strong>. Veuillez trouver les informations relatives à votre bonne installation. Nous l'avons équipée et préparée comme pour nos séjours — merci d'en prendre soin." data-en="Welcome to <strong>Villa Corsu</strong>. Here is all the information you need to settle in comfortably. We have equipped and prepared it as if it were our own stay — please take good care of it.">Bienvenue dans la <strong>Villa Corsu</strong>. Veuillez trouver les informations relatives à votre bonne installation. Nous l'avons équipée et préparée comme pour nos séjours — merci d'en prendre soin.</p>
+    <div class="contact-btns">
+      <a href="tel:0616197670" class="contact-btn">
+        <div class="cbtn-icon">📞</div>
+        <div class="cbtn-text">
+          <div class="label" data-fr="Appeler" data-en="Call">Appeler</div>
+          <div class="name">Laëtitia</div>
+        </div>
+      </a>
+      <a href="tel:0626524934" class="contact-btn" style="background:#5c4e36">
+        <div class="cbtn-icon">📞</div>
+        <div class="cbtn-text">
+          <div class="label" data-fr="Appeler" data-en="Call">Appeler</div>
+          <div class="name">Fred</div>
+        </div>
+      </a>
+      <a href="/cdn-cgi/l/email-protection#7006191c1c115e131f02030530171d11191c5e131f1d4f0305121a1513044d3d031755424014155542401e1f03554240261903190415050203" class="contact-btn" style="background:#3a5a7a" onclick="window.location.href='mailto:villa.corsu@gmail.com?subject=Msg%20de%20nos%20Visiteurs'; return false;">
+        <div class="cbtn-icon">✉️</div>
+        <div class="cbtn-text">
+          <div class="label" data-fr="Email" data-en="Email">Email</div>
+          <div class="name">Villa Corsu</div>
+        </div>
+      </a>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="divider" style="margin-top:24px"></div>
+
+<!-- ADRESSE -->
+<div class="section reveal" id="s-adresse">
+  <div class="section-header">
+    <div class="chip" data-fr="Localisation" data-en="Location">Localisation</div>
+    <h2 class="section-title" data-fr="Comment nous <em>trouver ?</em>" data-en="How to <em>find us?</em>">Comment nous <em>trouver ?</em></h2>
+  </div>
+
+  <!-- GALERIE PHOTOS ACCÈS -->
+  <div class="gallery-wrap" style="margin-bottom:16px;">
+    <button class="gallery-arrow prev" id="gallery-prev" onclick="galleryScroll('prev')" aria-label="Précédent">&#8592;</button>
+    <div class="gallery-scroll" id="gallery-scroll">
+      <img class="gallery-img" src="gfx/chemin3.png" alt="Plan d'accès">
+      <img class="gallery-img" src="gfx/chemin2.png" alt="Panneau OUVERT">
+      <img class="gallery-img" src="gfx/chemin1.png" alt="Portail blanc Villa Corsu">
+      <img class="gallery-img" src="gfx/8_Villa_Corsu.png" alt="8 Villa Corsu">
+    </div>
+    <button class="gallery-arrow next" id="gallery-next" onclick="galleryScroll('next')" aria-label="Suivant">&#8594;</button>
+  </div>
+
+  <div class="address-card">
+    <div class="addr-map"><div class="map-pin">📍</div></div>
+    <div class="addr-body">
+      <h3>8 Lot Susini, 20171 Monacia d'Aulène</h3>
+      <p data-fr="Corse du Sud, France" data-en="South Corsica, France">Corse du Sud, France</p>
+      <div class="addr-steps">
+        <div class="addr-step"><span class="step-icon">🏤</span><span data-fr="Chemin à droite de la poste (panneau jaune OUVERT)" data-en="Path to the right of the post office (yellow OPEN sign)">Chemin à droite de la poste (panneau jaune OUVERT)</span></div>
+        <div class="addr-step"><span class="step-icon">🚪</span><span data-fr="Portail blanc au fond du chemin" data-en="White gate at the end of the path">Portail blanc au fond du chemin</span></div>
+        <div class="addr-step"><span class="step-icon">🏡</span><span>8 Villa Corsu</span></div>
+      </div>
+      <a href="https://maps.google.com/?q=8+Lot+Susini+20171+Monacia+d'Aullene" target="_blank" class="maps-btn">🗺️ <span data-fr="Ouvrir dans Google Maps" data-en="Open in Google Maps">Ouvrir dans Google Maps</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ARRIVÉE -->
+<div class="section reveal" id="s-arrivee">
+  <div class="section-header">
+    <div class="chip" data-fr="Check-in" data-en="Check-in">Check-in</div>
+    <h2 class="section-title" data-fr="Votre <em>arrivée</em>" data-en="Your <em>arrival</em>">Votre <em>arrivée</em></h2>
+  </div>
+  <div class="step-card">
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">1</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h4 data-fr="Arrivée à partir de 17h" data-en="Arrival from 5pm">Arrivée à partir de 17h</h4>
+          <p data-fr="Le portail en face du chemin sera ouvert." data-en="The gate facing the path will be open.">Le portail en face du chemin sera ouvert.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">2</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h4 data-fr="Boîte à clés — porte d'entrée" data-en="Key box — front door">Boîte à clés — porte d'entrée</h4>
+          <p data-fr="Les clefs de la villa sont au niveau de la porte d'entrée, face au barbecue." data-en="The villa keys are at the entrance door, facing the barbecue.">Les clefs de la villa sont au niveau de la porte d'entrée, face au barbecue.</p>
+          <div class="code-hl">2423</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-col"><div class="step-num">3</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <h4 data-fr="Installation" data-en="Settle in">Installation</h4>
+          <p data-fr="Profitez ! Toutes les informations utiles sont dans ce guide." data-en="Enjoy! All useful information is in this guide.">Profitez ! Toutes les informations utiles sont dans ce guide.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WIFI -->
+<div class="section reveal" id="s-wifi">
+  <div class="section-header">
+    <div class="chip" data-fr="Connexion" data-en="Connection">Connexion</div>
+    <h2 class="section-title" data-fr="Internet <em>haut débit</em>" data-en="High-speed <em>internet</em>">Internet <em>haut débit</em></h2>
+  </div>
+  <div class="wifi-card">
+    <div class="wifi-head">
+      <div class="wifi-ico">📶</div>
+      <div class="wifi-ttl">WiFi<small data-fr="Réseau haut débit disponible" data-en="High-speed network available">Réseau haut débit disponible</small></div>
+    </div>
+    <div class="wifi-row">
+      <span class="wlabel" data-fr="Réseau" data-en="Network">Réseau</span>
+      <span class="wvalue">VILLACORSU20171</span>
+    </div>
+    <div class="wifi-row">
+      <span class="wlabel" data-fr="Mot de passe" data-en="Password">Mot de passe</span>
+      <span class="wvalue mono">villa.corsu!2423</span>
+    </div>
+    <a class="copy-btn" id="wifi-btn" href="#" onclick="connectWifi(event)" data-fr="📶 Connexion au WiFi" data-en="📶 Connect to WiFi">📶 Connexion au WiFi</a>
+    <div class="wifi-qr-wrap">
+      <p class="wifi-qr-label" data-fr="Ou scannez le QR code" data-en="Or scan the QR code">Ou scannez le QR code</p>
+      <img src="gfx/wifi-qr.png" alt="QR Code WiFi" class="wifi-qr-img">
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- RÈGLEMENT -->
+<div class="section reveal" id="s-reglement">
+  <div class="section-header">
+    <div class="chip" data-fr="À respecter" data-en="House rules">À respecter</div>
+    <h2 class="section-title" data-fr="<em>Règlement</em> de la villa" data-en="Villa <em>rules</em>"><em>Règlement</em> de la villa</h2>
+  </div>
+  <div class="rules-list">
+    <div class="rule-card reveal">
+      <div class="rule-ico">🚭</div>
+      <div class="rule-body"><h4 data-fr="Non-fumeur" data-en="No smoking">Non-fumeur</h4><p data-fr="La villa est entièrement non-fumeur." data-en="The villa is entirely non-smoking.">La villa est entièrement non-fumeur.</p></div>
+    </div>
+    <div class="rule-card reveal">
+      <div class="rule-ico">🗑️</div>
+      <div class="rule-body"><h4 data-fr="Vos déchets" data-en="Waste">Vos déchets</h4><p data-fr="Ne laissez pas vos poubelles dans la villa ou le jardin." data-en="Do not leave your bins inside the villa or garden.">Ne laissez pas vos poubelles dans la villa ou le jardin.</p></div>
+    </div>
+    <div class="rule-card reveal">
+      <div class="rule-ico">🔇</div>
+      <div class="rule-body"><h4 data-fr="Le voisinage" data-en="Neighbours">Le voisinage</h4><p data-fr="Veuillez respecter la tranquillité des voisins." data-en="Please respect the neighbours' peace and quiet.">Veuillez respecter la tranquillité des voisins.</p></div>
+    </div>
+    <div class="rule-card reveal">
+      <div class="rule-ico">🚿</div>
+      <div class="rule-body"><h4 data-fr="Lavage interdit" data-en="No car washing">Lavage interdit</h4><p data-fr="Le lavage des voitures n'est pas autorisé." data-en="Car washing is not permitted.">Le lavage des voitures n'est pas autorisé.</p></div>
+    </div>
+    <div class="rule-card reveal">
+      <div class="rule-ico">🐕</div>
+      <div class="rule-body"><h4 data-fr="Nos amies les bêtes" data-en="Pets">Nos amies les bêtes</h4><p data-fr="Les animaux ne sont pas autorisés dans la villa." data-en="Animals are not allowed inside the villa.">Les animaux ne sont pas autorisés dans la villa.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- INFOS IMPORTANTES -->
+<div class="section reveal" id="s-infos">
+  <div class="section-header">
+    <div class="chip" data-fr="Important" data-en="Important">Important</div>
+    <h2 class="section-title" data-fr="Informations <em>importantes</em>" data-en="<em>Important</em> information">Informations <em>importantes</em></h2>
+  </div>
+  <div class="imp-card">
+    <h4>⚠️ <span data-fr="Points de vigilance" data-en="Watch out">Points de vigilance</span></h4>
+    <p data-fr="⚠️ Assurez-vous que rien n'entrave la descente du store du séjour pour éviter d'endommager le moteur.<br>⚠️ Pensez à fermer le robinet du jardin après chaque utilisation du jet pour prévenir toute inondation.<br>⚠️ Fermer le portail une fois entré ou sorti de la villa." data-en="⚠️ Make sure nothing obstructs the living room blind from rolling down, to avoid damaging the motor.<br>⚠️ Remember to turn off the garden tap after using the hose to prevent flooding.<br>⚠️ Close the gate once you have entered or left the villa.">⚠️ Assurez-vous que rien n'entrave la descente du store du séjour pour éviter d'endommager le moteur.<br>⚠️ Pensez à fermer le robinet du jardin après chaque utilisation du jet pour prévenir toute inondation.<br>⚠️ Fermer le portail une fois entré ou sorti de la villa.</p>
+  </div>
+  <div class="imp-card" style="border-color:#607d8b">
+    <h4 style="color:#607d8b">📷 <span data-fr="Sécurité &amp; Caméra" data-en="Security &amp; Camera">Sécurité &amp; Caméra</span></h4>
+    <p data-fr="Trois caméras extérieures surveillent les différentes entrées et l'arrière de la villa. Aucune image n'est enregistrée — seule la détection de mouvement est notifiée." data-en="Three outdoor cameras monitor the various entrances and the rear of the villa. No footage is recorded — only motion detection alerts are sent.">Trois caméras extérieures surveillent les différentes entrées et l'arrière de la villa. Aucune image n'est enregistrée — seule la détection de mouvement est notifiée.</p>
+  </div>
+  <div class="imp-card" style="border-color:var(--green)">
+    <h4 style="color:var(--green)">♻️ <span data-fr="Ordures ménagères" data-en="Household waste">Ordures ménagères</span></h4>
+    <p data-fr="Il n'y a pas de ramassage des poubelles dans les villages de Corse du Sud. Les poubelles se jettent dans les conteneurs aux entrées/sorties du village de Monacia, avec tri du plastique, verre et ordures ménagères." data-en="There is no bin collection in South Corsican villages. Bins must be taken to the containers at the entrances/exits of Monacia village — sort plastic, glass and household waste separately.">Il n'y a pas de ramassage des poubelles dans les villages de Corse du Sud. Les poubelles se jettent dans les conteneurs aux entrées/sorties du village de Monacia, avec tri du plastique, verre et ordures ménagères.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- DÉPART -->
+<div class="section reveal" id="s-depart">
+  <div class="section-header">
+    <div class="chip" data-fr="Check-out" data-en="Check-out">Check-out</div>
+    <h2 class="section-title" data-fr="Votre <em>départ</em>" data-en="Your <em>departure</em>">Votre <em>départ</em></h2>
+  </div>
+  <div class="depart-card">
+    <div class="dep-item">
+      <div class="dep-ico">🕙</div>
+      <div class="dep-body"><h4 data-fr="Heure de départ" data-en="Check-out time">Heure de départ</h4><p data-fr="Veuillez libérer la villa avant 10h le matin." data-en="Please vacate the villa before 10am.">Veuillez libérer la villa avant 10h le matin.</p></div>
+    </div>
+    <div class="dep-item">
+      <div class="dep-ico">🧹</div>
+      <div class="dep-body"><h4 data-fr="Nettoyage" data-en="Cleaning">Nettoyage</h4><p data-fr="Vider le lave-vaisselle, jeter les poubelles et défaire vos draps." data-en="Empty the dishwasher, take out the bins and strip your beds.">Vider le lave-vaisselle, jeter les poubelles et défaire vos draps.</p></div>
+    </div>
+    <div class="dep-item">
+      <div class="dep-ico">🔍</div>
+      <div class="dep-body"><h4 data-fr="Vérification" data-en="Check">Vérification</h4><p data-fr="Faire un dernier tour pour ne rien oublier." data-en="Do a final walkthrough so you don't leave anything behind.">Faire un dernier tour pour ne rien oublier.</p></div>
+    </div>
+    <div class="dep-item">
+      <div class="dep-ico">🔑</div>
+      <div class="dep-body"><h4 data-fr="Remise des clés" data-en="Return keys">Remise des clés</h4><p data-fr="Remettre les deux clés dans le coffre à clef." data-en="Put both keys back in the key box.">Remettre les deux clés dans le coffre à clef.</p></div>
+    </div>
+    <div class="dep-item">
+      <div class="dep-ico">⭐</div>
+      <div class="dep-body"><h4>Airbnb</h4><p data-fr="Partagez votre expérience de voyage, laissez-nous un commentaire ⭐⭐⭐⭐⭐" data-en="Share your travel experience and leave us a review ⭐⭐⭐⭐⭐">Partagez votre expérience de voyage, laissez-nous un commentaire ⭐⭐⭐⭐⭐</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- LOISIRS -->
+<div class="section reveal" id="s-loisirs">
+  <div class="section-header">
+    <div class="chip" data-fr="Activités" data-en="Activities">Activités</div>
+    <h2 class="section-title" data-fr="Équipements <em>loisirs</em>" data-en="Leisure <em>equipment</em>">Équipements <em>loisirs</em></h2>
+  </div>
+  <div class="loisirs-grid">
+    <div class="loisir-card reveal"><span class="ico">🏓</span><h4 data-fr="Ping Pong" data-en="Table Tennis">Ping Pong</h4><p data-fr="Table, raquettes et balles à disposition" data-en="Table, paddles and balls">Table, raquettes et balles à disposition</p></div>
+    <div class="loisir-card reveal"><span class="ico">🏖️</span><h4 data-fr="Plage" data-en="Beach">Plage</h4><p data-fr="Pelles, parasol, raquettes Beach Tennis" data-en="Spades, parasol, beach tennis">Pelles, parasol, raquettes Beach Tennis</p></div>
+    <div class="loisir-card reveal"><span class="ico">🎯</span><h4 data-fr="Jeux" data-en="Games">Jeux</h4><p data-fr="Pétanque, Molky, fléchettes…" data-en="Pétanque, Molky, darts…">Pétanque, Molky, fléchettes…</p></div>
+    <div class="loisir-card reveal"><span class="ico">🎲</span><h4 data-fr="Jeux de société" data-en="Board games">Jeux de société</h4><p data-fr="Dans le buffet du séjour" data-en="In the living room sideboard">Dans le buffet du séjour</p></div>
+    <div class="loisir-card reveal"><span class="ico">🚵</span><h4 data-fr="VTT" data-en="Mountain Bike">VTT</h4><p data-fr="Selon disponibilité. Code cadenas 2423" data-en="Subject to availability. Lock code 2423">Selon disponibilité. Code cadenas 2423</p></div>
+  </div>
+  <p style="margin-top:14px; font-size:.82rem; color:var(--muted); text-align:center; font-style:italic;" data-fr="🙏 Merci de replacer les différents objets à leur place avant de partir." data-en="🙏 Please put all items back in their place before leaving.">🙏 Merci de replacer les différents objets à leur place avant de partir.</p>
+</div>
+
+<div class="divider"></div>
+
+<!-- TORTUES -->
+<div class="section reveal" style="padding-top:0">
+  <div class="tortues-wrap">
+    <div class="chip" data-fr="🐢 Vos colocataires" data-en="🐢 Your housemates">🐢 Vos colocataires</div>
+    <h2 class="section-title" data-fr="Une famille de <em>tortues…</em>" data-en="A family of <em>tortoises…</em>">Une famille de <em>tortues…</em></h2>
+    <p class="section-sub" data-fr="… vit paisiblement dans le jardin 🌿" data-en="… lives peacefully in the garden 🌿">… vit paisiblement dans le jardin 🌿</p>
+    <div class="tortues-grid">
+      <div class="tortue-item"><span class="ico">🚪</span><h4 data-fr="Fermez le portail" data-en="Close the gate">Fermez le portail</h4><p data-fr="Elles restent dans le jardin pour leur sécurité !" data-en="They stay in the garden for their safety!">Elles restent dans le jardin pour leur sécurité !</p></div>
+      <div class="tortue-item"><span class="ico">🥗</span><h4 data-fr="Nourriture" data-en="Food">Nourriture</h4><p data-fr="Légumes et fruits frais, pas de viandes" data-en="Fresh fruit and veg, no meat">Légumes et fruits frais, pas de viandes</p></div>
+      <div class="tortue-item"><span class="ico">💧</span><h4 data-fr="Hydratation" data-en="Hydration">Hydratation</h4><p data-fr="De l'eau fraîche — surtout pas de rosé !" data-en="Fresh water — no rosé!">De l'eau fraîche — surtout pas de rosé !</p></div>
+      <div class="tortue-item"><span class="ico">🐢</span><h4 data-fr="Respect" data-en="Respect">Respect</h4><p data-fr="Animaux protégés, prenez-en soin !" data-en="Protected animals — care for them!">Animaux protégés, prenez-en soin !</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ADRESSES -->
+<div class="section reveal" id="s-adresses">
+  <div class="section-header">
+    <div class="chip" data-fr="Aux alentours" data-en="Nearby">Aux alentours</div>
+    <h2 class="section-title" data-fr="Vos <em>adresses</em>" data-en="Your <em>local spots</em>">Vos <em>adresses</em></h2>
+  </div>
+  <div class="adresses-list">
+
+    <div class="adr-card reveal" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=8+Lot+Susini+Monacia+d+Aullene+Corse&travelmode=driving','_blank')" style="cursor:pointer">
+      <div class="adr-head"><img class="adr-flag" src="gfx/monacia.jpg" alt="Monacia" style="object-fit:cover"><h3>Monacia</h3><img class="adr-city-img" src="gfx/monacia.jpg" alt="Monacia"></div>
+      <div class="adr-items">
+        <div class="adr-item" data-fr="Petit boucher sur la place du village" data-en="Small butcher on the village square">Petit boucher sur la place du village</div>
+        <div class="adr-item" data-fr="Petite supérette en bas du village" data-en="Small grocery at the bottom of the village">Petite supérette en bas du village</div>
+        <div class="adr-item" data-fr="Bureau de poste" data-en="Post office">Bureau de poste</div>
+        <div class="adr-item"><a href="https://restaurantlapergola.fr" target="_blank" data-fr="Restaurant La Pergola" data-en="Restaurant La Pergola">Restaurant La Pergola</a></div>
+        <div class="adr-item"><span data-fr="Pizzeria A Cuncaredda" data-en="Pizzeria A Cuncaredda">Pizzeria A Cuncaredda</span></div>
+        <div class="adr-item"><a href="https://www.monaciadaullene.fr" target="_blank" data-fr="Site de la mairie" data-en="Town hall website">Site de la mairie</a></div>
+      </div>
+    </div>
+
+    <div class="adr-card reveal" onclick="window.open('https://www.google.com/maps/dir/?api=1&origin=Pianotoli-Caldarello&destination=8+Lot+Susini+Monacia+d+Aullene+Corse&travelmode=driving','_blank')" style="cursor:pointer">
+      <div class="adr-head"><img class="adr-flag" src="gfx/pianotoli.jpg" alt="Pianotoli" style="object-fit:cover"><h3>Pianotoli</h3><img class="adr-city-img" src="gfx/pianotoli.jpg" alt="Pianotoli"></div>
+      <div class="adr-items">
+        <div class="adr-item" data-fr="Supermarché SPAR (boucherie, poissonnier)" data-en="SPAR supermarket (butcher, fishmonger)">Supermarché SPAR (boucherie, poissonnier)</div>
+        <div class="adr-item" data-fr="Supermarché U Express (boucherie et boulangerie)" data-en="U Express (butcher and bakery)">Supermarché U Express (boucherie et boulangerie)</div>
+        <div class="adr-item" data-fr="Boutique Boutik de Celyn" data-en="Boutik de Celyn shop">Boutique Boutik de Celyn</div>
+        <div class="adr-item" data-fr="Bureau de Tabac - Presse" data-en="Tobacconist - Press">Bureau de Tabac - Presse</div>
+        <div class="adr-item" data-fr="Distributeur de billets au SPAR" data-en="ATM at SPAR">Distributeur de billets au SPAR</div>
+        <div class="adr-item" data-fr="Station Essence" data-en="Petrol station">Station Essence</div>
+      </div>
+      <div class="warn-badge">⚠️ <span data-fr="Radar à l'entrée de Pianotoli — 50 KM/H !" data-en="Speed camera at Pianotoli entrance — 50 KM/H!">Radar à l'entrée de Pianotoli — 50 KM/H !</span></div>
+    </div>
+
+    <div class="adr-card reveal" onclick="window.open('https://www.google.com/maps/dir/?api=1&origin=Aéroport+de+Figari+Sud-Corse&destination=8+Lot+Susini+Monacia+d+Aullene+Corse&travelmode=driving','_blank')" style="cursor:pointer">
+      <div class="adr-head"><img class="adr-flag" src="gfx/figari.jpeg" alt="Figari" style="object-fit:cover"><h3>Figari</h3><img class="adr-city-img" src="gfx/figari.jpeg" alt="Figari"></div>
+      <div class="adr-items">
+        <div class="adr-item" data-fr="Galerie souvenir aéroport Figari" data-en="Souvenir gallery at Figari airport">Galerie souvenir aéroport Figari</div>
+        <div class="adr-item" data-fr="Pharmacie" data-en="Pharmacy">Pharmacie</div>
+        <div class="adr-item" data-fr="Distributeur de billets" data-en="ATM">Distributeur de billets</div>
+      </div>
+    </div>
+
+    <div class="adr-card reveal" onclick="window.open('https://www.google.com/maps/dir/?api=1&origin=Bonifacio+Corse&destination=8+Lot+Susini+Monacia+d+Aullene+Corse&travelmode=driving','_blank')" style="cursor:pointer">
+      <div class="adr-head"><img class="adr-flag" src="gfx/bonifacio.jpg" alt="Bonifacio" style="object-fit:cover"><h3>Bonifacio</h3><img class="adr-city-img" src="gfx/bonifacio.jpg" alt="Bonifacio"></div>
+      <div class="adr-items">
+        <div class="adr-item"><a href="https://www.levoilier-bonifacio.com" target="_blank" data-fr="Restaurants : Le Voilier, L'Archivolto, La Caravelle" data-en="Restaurants: Le Voilier, L'Archivolto, La Caravelle">Restaurants : Le Voilier, L'Archivolto, La Caravelle</a></div>
+        <div class="adr-item" data-fr="Les balades en bateau" data-en="Boat trips">Les balades en bateau</div>
+        <div class="adr-item" data-fr="La vieille ville et son petit train" data-en="The old town and its little train">La vieille ville et son petit train</div>
+        <div class="adr-item" data-fr="Jet Evasion" data-en="Jet Evasion">Jet Evasion</div>
+      </div>
+    </div>
+
+    <div class="adr-card reveal" onclick="window.open('https://www.google.com/maps/dir/?api=1&origin=Porto-Vecchio+Corse&destination=8+Lot+Susini+Monacia+d+Aullene+Corse&travelmode=driving','_blank')" style="cursor:pointer">
+      <div class="adr-head"><img class="adr-flag" src="gfx/porto-vecchio.jpg" alt="Porto-Vecchio" style="object-fit:cover"><h3>Porto-Vecchio</h3><img class="adr-city-img" src="gfx/porto-vecchio.jpg" alt="Porto-Vecchio"></div>
+      <div class="adr-items">
+        <div class="adr-item" data-fr="Boutiques et restaurants de la vieille ville" data-en="Old town shops and restaurants">Boutiques et restaurants de la vieille ville</div>
+        <div class="adr-item" data-fr="Décathlon, InterSport, Maison du Monde, Auchan, Leclerc" data-en="Décathlon, InterSport, Maison du Monde, Auchan, Leclerc">Décathlon, InterSport, Maison du Monde, Auchan, Leclerc</div>
+        <div class="adr-item" data-fr="Weldom, GameVert…" data-en="Weldom, GameVert…">Weldom, GameVert…</div>
+      </div>
+    </div>
+
+    <div class="adr-card reveal">
+      <div class="adr-head"><img class="adr-flag" src="gfx/plages.jpg" alt="Plages de Corse" style="object-fit:cover"><h3 data-fr="Plages" data-en="Beaches">Plages</h3><img class="adr-city-img" src="gfx/plages.jpg" alt="Plages de Corse"></div>
+      <div class="adr-items">
+        <div class="adr-item">Carataggio · La petite Spérone · Saint Cyprien</div>
+        <div class="adr-item">Palombadgia · Rondinara · Pinarellu</div>
+        <div class="adr-item">Santa Julia · Saint Giovani…</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- LIENS UTILES -->
+<div class="section reveal">
+  <div class="section-header">
+    <div class="chip" data-fr="Ressources" data-en="Resources">Ressources</div>
+    <h2 class="section-title" data-fr="Quelques liens <em>utiles</em>" data-en="Useful <em>links</em>">Quelques liens <em>utiles</em></h2>
+  </div>
+  <a href="carte_corse.html" class="poi-btn reveal">
+    <span class="poi-btn-ico">🗺️</span>
+    <div class="poi-btn-body">
+      <strong data-fr="Carte de la Corse" data-en="Map of Corsica">Carte de la Corse</strong>
+      <span data-fr="Points d'intérêt autour de la villa" data-en="Points of interest around the villa">Points d'intérêt autour de la villa</span>
+    </div>
+    <span class="poi-btn-arrow">→</span>
+  </a>
+  <div class="liens-list">
+    <a href="https://www.corsicalovers.com" target="_blank" class="lien-card reveal">
+      <div class="lien-thumb">🌲</div>
+      <div class="lien-body"><h4>Corsica Lovers</h4><p data-fr="Découvrez la Corse avec passion avec ce blog amateur." data-en="Discover Corsica with passion through this amateur blog.">Découvrez la Corse avec passion avec ce blog amateur.</p></div>
+      <div class="lien-arrow">→</div>
+    </a>
+    <a href="https://www.extremesudjet.com" target="_blank" class="lien-card reveal">
+      <div class="lien-thumb">🚤</div>
+      <div class="lien-body"><h4>Extreme Sud Jet</h4><p data-fr="Offrez-vous une excursion en jet au départ de Bonifacio." data-en="Treat yourself to a jet excursion from Bonifacio.">Offrez-vous une excursion en jet au départ de Bonifacio.</p></div>
+      <div class="lien-arrow">→</div>
+    </a>
+    <a href="https://bonifacio.fr/autour-de-bonifacio/les-plus-belles-randonnees-du-sud-corse/" target="_blank" class="lien-card reveal">
+      <div class="lien-thumb">🥾</div>
+      <div class="lien-body"><h4>Rando Sentiers</h4><p data-fr="Partez en randonnée sur les sentiers de Corse." data-en="Go hiking on Corsica's trails.">Partez en randonnée sur les sentiers de Corse.</p></div>
+      <div class="lien-arrow">→</div>
+    </a>
+    <a href="https://bonifacio.fr/autour-de-bonifacio/les-plus-belles-plages-du-sud-corse/" target="_blank" class="lien-card reveal">
+      <div class="lien-thumb">🏖️</div>
+      <div class="lien-body"><h4>Plages du Sud Corse</h4><p data-fr="Les plus belles plages autour de Bonifacio." data-en="The most beautiful beaches around Bonifacio.">Les plus belles plages autour de Bonifacio.</p></div>
+      <div class="lien-arrow">→</div>
+    </a>
+    <a href="https://www.corsica-aventure.com/fr/randonnee-corse" target="_blank" class="lien-card reveal">
+      <div class="lien-thumb">🧗</div>
+      <div class="lien-body"><h4>Corsica Aventure</h4><p data-fr="Randonnées et aventures en pleine nature corse." data-en="Hiking and outdoor adventures in Corsica.">Randonnées et aventures en pleine nature corse.</p></div>
+      <div class="lien-arrow">→</div>
+    </a>
+    <a href="https://www.leblogcashpistache.fr/ou-aller-en-corse-du-sud-en-1-semaine/" target="_blank" class="lien-card reveal">
+      <div class="lien-thumb">📅</div>
+      <div class="lien-body"><h4>Cash Pistache</h4><p data-fr="Où aller en Corse du Sud en 1 semaine — itinéraire complet." data-en="Where to go in South Corsica in 1 week — full itinerary.">Où aller en Corse du Sud en 1 semaine — itinéraire complet.</p></div>
+      <div class="lien-arrow">→</div>
+    </a>
+    <a href="https://trouve-ton-voyage.com/une-escapade-en-corse-du-sud/" target="_blank" class="lien-card reveal">
+      <div class="lien-thumb">🗺️</div>
+      <div class="lien-body"><h4>Trouve ton Voyage</h4><p data-fr="Guide pratique pour une escapade en Corse du Sud." data-en="Practical guide for a getaway in South Corsica.">Guide pratique pour une escapade en Corse du Sud.</p></div>
+      <div class="lien-arrow">→</div>
+    </a>
+    <a href="https://asantagiulia.com/guide/bien-manger/" target="_blank" class="lien-card reveal">
+      <div class="lien-thumb">🍽️</div>
+      <div class="lien-body"><h4>A Santa Giulia — Bien manger</h4><p data-fr="Les meilleures adresses pour bien manger en Corse du Sud." data-en="The best places to eat well in South Corsica.">Les meilleures adresses pour bien manger en Corse du Sud.</p></div>
+      <div class="lien-arrow">→</div>
+    </a>
+  </div>
+</div>
+
+
+<!-- FOOTER -->
+<footer class="footer">
+  <img class="footer-video" src="gfx/logo.png" alt="La Villa Corsu" style="background:white; padding:8px;">
+  <div class="footer-title">La Villa Corsu</div>
+  <div class="footer-sub">Laëtitia &amp; Fred</div>
+  <p class="footer-msg" data-fr="Nous vous souhaitons une bonne installation et un excellent séjour dans la Villa Corsu." data-en="We wish you a wonderful stay at Villa Corsu. Enjoy every moment!">Nous vous souhaitons une bonne installation et un excellent séjour dans la Villa Corsu.</p>
+  <div class="footer-divider"></div>
+  <p class="footer-note">Version 1.7</p>
+</footer>
+
+<!-- BACK TO TOP -->
+<button class="fab" id="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- LIGHTBOX -->
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
+// Scroll reveal
+const revEls = document.querySelectorAll('.reveal');
+revEls.forEach(el => el.classList.add('will-animate'));
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const siblings = [...e.target.parentElement.querySelectorAll('.reveal:not(.in)')];
+    const idx = siblings.indexOf(e.target);
+    setTimeout(() => e.target.classList.add('in'), Math.min(idx,4)*65);
+    ro.unobserve(e.target);
+  });
+}, { threshold:.08, rootMargin:'0px 0px -24px 0px' });
+revEls.forEach(el => ro.observe(el));
+
+// FAB
+const fab = document.getElementById('fab');
+window.addEventListener('scroll', () => fab.classList.toggle('visible', scrollY > 380), {passive:true});
+
+// Connect to WiFi
+function connectWifi(e) {
+  e.preventDefault();
+  const ssid = 'VILLACORSU20171';
+  const pwd  = 'villa.corsu!2423';
+  const btn  = document.getElementById('wifi-btn');
+
+  // Build WiFi URI (works on Android; iOS uses wifi:// via shortcuts)
+  // Try android wifi config intent first, fallback to wifi:// URI
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid = /android/i.test(navigator.userAgent);
+
+  if (isAndroid) {
+    // Android: open WiFi settings via intent (opens system WiFi on some launchers)
+    window.location.href = 'intent://wifi/#Intent;scheme=wifi;end';
+    setTimeout(() => {
+      // Fallback: copy password and tell user
+      navigator.clipboard.writeText(pwd).catch(()=>{});
+      btn.textContent = '✓ Mdp copié — activez le WiFi manuellement';
+      btn.style.background = '#4a6741';
+      setTimeout(() => { btn.textContent = '📶 Connexion au WiFi'; btn.style.background = ''; }, 4000);
+    }, 800);
+  } else if (isIOS) {
+    // iOS 16+: wifi:// scheme
+    window.location.href = `wifi://${ssid}:${pwd}`;
+    setTimeout(() => {
+      navigator.clipboard.writeText(pwd).catch(()=>{});
+      btn.textContent = '✓ Mdp copié — activez le WiFi manuellement';
+      btn.style.background = '#4a6741';
+      setTimeout(() => { btn.textContent = '📶 Connexion au WiFi'; btn.style.background = ''; }, 4000);
+    }, 800);
+  } else {
+    // Desktop: copy password + show instructions
+    navigator.clipboard.writeText(pwd).then(() => {
+      btn.textContent = '✓ Mot de passe copié dans le presse-papiers';
+      btn.style.background = '#4a6741';
+      setTimeout(() => { btn.textContent = '📶 Connexion au WiFi'; btn.style.background = ''; }, 3000);
+    }).catch(() => {
+      btn.textContent = `Réseau : ${ssid} · Mdp : ${pwd}`;
+      setTimeout(() => { btn.textContent = '📶 Connexion au WiFi'; }, 4000);
+    });
+  }
+}
+
+// Active nav pill on scroll
+const pills = document.querySelectorAll('.nav-pill[data-section]');
+const sections = [...pills].map(p => document.getElementById(p.dataset.section)).filter(Boolean);
+const pillsNav = document.getElementById('nav-pills');
+
+function updateActivePill() {
+  let current = null;
+  sections.forEach(s => {
+    if (s.getBoundingClientRect().top <= 140) current = s.id;
+  });
+  pills.forEach(p => {
+    const isActive = p.dataset.section === current;
+    p.classList.toggle('active', isActive);
+    if (isActive) {
+      // scroll pill into view within the nav-pills bar
+      p.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+    }
+  });
+}
+window.addEventListener('scroll', updateActivePill, { passive:true });
+
+// Smooth scroll offset for sticky bars
+document.querySelectorAll('.nav-pill[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.getElementById(a.dataset.section);
+    if (!target) return;
+    const offset = 130; // topbar + pills height
+    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior:'smooth' });
+  });
+});
+// setLang définie dans <head>
+</script>
+
+<!-- Lightbox -->
+<div id="lb" onclick="if(event.target===this)lbHide()">
+  <button id="lb-close" onclick="lbHide()">&#x2715;</button>
+  <img id="lb-img" src="" alt="">
+</div>

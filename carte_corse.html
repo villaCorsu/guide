@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Carte · Corse</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sand: #f5efe6; --terracotta: #c26a3d; --sea: #1a6b8a;
+      --night: #0f1923; --ink: #1e2d3a; --cream: #faf7f2; --gold: #d4a85a;
+      --radius: 14px; --header-h: 56px; --sheet-peek: 72px;
+    }
+    html, body { height: 100%; font-family: "DM Sans", sans-serif; background: var(--night); color: var(--sand); overflow: hidden; -webkit-tap-highlight-color: transparent; }
+
+    /* ═══ LAYOUT DESKTOP ═══ */
+    #app { display: grid; grid-template-rows: var(--header-h) 1fr; grid-template-columns: 320px 1fr; height: 100vh; }
+
+    header { grid-column: 1 / -1; background: var(--night); border-bottom: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; padding: 0 20px; gap: 12px; z-index: 1000; position: relative; }
+    .logo-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); flex-shrink: 0; }
+    header h1 { font-family: "Playfair Display", serif; font-size: 1.2rem; font-weight: 700; color: var(--cream); }
+    header h1 span { color: var(--gold); }
+    .header-tagline { font-size: .7rem; color: rgba(245,239,230,.35); letter-spacing: .12em; text-transform: uppercase; margin-left: auto; }
+
+    /* ── Header buttons ── */
+    .header-actions { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+    .btn-icon { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 8px; color: var(--cream); cursor: pointer; padding: 6px 12px; font-size: .75rem; font-family: "DM Sans", sans-serif; font-weight: 500; display: flex; align-items: center; gap: 5px; transition: background .15s; touch-action: manipulation; white-space: nowrap; }
+    .btn-icon:hover, .btn-icon:active { background: rgba(255,255,255,.13); }
+    .btn-icon.primary { background: var(--terracotta); border-color: var(--terracotta); }
+    .btn-icon.primary:hover, .btn-icon.primary:active { background: #d97a4a; }
+
+    /* ── Sidebar ── */
+    #sidebar { background: var(--ink); border-right: 1px solid rgba(255,255,255,.06); display: flex; flex-direction: column; overflow: hidden; }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.05); flex-shrink: 0; }
+    .filter-btn { font-family: "DM Sans", sans-serif; font-size: .72rem; font-weight: 500; padding: 5px 12px; border-radius: 99px; border: 1px solid rgba(255,255,255,.15); background: transparent; color: rgba(245,239,230,.7); cursor: pointer; transition: all .2s; touch-action: manipulation; }
+    .filter-btn:active, .filter-btn.active { background: var(--terracotta); border-color: var(--terracotta); color: #fff; box-shadow: 0 3px 10px rgba(194,106,61,.35); }
+    .poi-list { padding: 6px 10px 20px; flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.1) transparent; }
+    .poi-list::-webkit-scrollbar { width: 3px; }
+    .poi-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); }
+    .poi-card { display: flex; align-items: center; gap: 11px; padding: 9px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; margin-bottom: 3px; transition: background .15s; touch-action: manipulation; }
+    .poi-card:active, .poi-card:hover { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.09); }
+    .poi-card.highlighted { background: rgba(212,168,90,.12); border-color: rgba(212,168,90,.3); }
+    .poi-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: .95rem; flex-shrink: 0; }
+    .poi-info { flex: 1; min-width: 0; }
+    .poi-name { font-size: .85rem; font-weight: 500; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .poi-cat { font-size: .7rem; color: rgba(245,239,230,.4); margin-top: 1px; }
+    .poi-arrow { font-size: .8rem; color: rgba(245,239,230,.2); flex-shrink: 0; }
+    .empty-state { text-align: center; padding: 28px 16px; color: rgba(245,239,230,.3); font-size: .82rem; }
+
+    /* ── Map ── */
+    #map { position: relative; touch-action: none; }
+    #layer-toggle { position: absolute; top: 12px; right: 12px; z-index: 999; background: var(--ink); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 3px; display: flex; gap: 3px; box-shadow: 0 4px 20px rgba(0,0,0,.4); }
+    .layer-btn { font-family: "DM Sans", sans-serif; font-size: .7rem; font-weight: 500; padding: 6px 12px; border-radius: 7px; border: none; background: transparent; color: rgba(245,239,230,.5); cursor: pointer; transition: all .15s; touch-action: manipulation; }
+    .layer-btn.active { background: var(--sea); color: #fff; box-shadow: 0 2px 8px rgba(26,107,138,.4); }
+    #counter { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 999; background: rgba(15,25,35,.85); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.1); border-radius: 99px; padding: 7px 18px; font-size: .75rem; color: rgba(245,239,230,.7); letter-spacing: .06em; pointer-events: none; white-space: nowrap; }
+    #counter strong { color: var(--gold); }
+
+    /* ── Popup ── */
+    .leaflet-popup-content-wrapper { background: var(--ink) !important; border: 1px solid rgba(255,255,255,.1) !important; border-radius: var(--radius) !important; box-shadow: 0 12px 40px rgba(0,0,0,.6) !important; padding: 0 !important; }
+    .leaflet-popup-tip { background: var(--ink) !important; }
+    .leaflet-popup-content { margin: 0 !important; width: 220px !important; }
+    .custom-popup { padding: 14px; }
+    .custom-popup .cat-badge { display: inline-block; font-size: .62rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; margin-bottom: 7px; }
+    .custom-popup h3 { font-family: "Playfair Display", serif; font-size: .95rem; font-weight: 700; color: var(--cream); margin-bottom: 5px; line-height: 1.3; }
+    .custom-popup p { font-size: .78rem; color: rgba(245,239,230,.55); line-height: 1.5; }
+
+    /* ── Zoom ── */
+    .leaflet-control-zoom { border: none !important; box-shadow: 0 4px 20px rgba(0,0,0,.4) !important; }
+    .leaflet-control-zoom a { background: var(--ink) !important; color: var(--cream) !important; border-color: rgba(255,255,255,.1) !important; font-size: 1.1rem !important; width: 36px !important; height: 36px !important; line-height: 36px !important; }
+    .leaflet-control-zoom a:hover { background: var(--sea) !important; }
+
+    /* ── Marker ── */
+    .custom-marker { width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 14px rgba(0,0,0,.4); border: 2px solid rgba(255,255,255,.25); }
+    .custom-marker span { transform: rotate(45deg); font-size: .95rem; }
+
+    /* ═══ MODAL AJOUT POI ═══ */
+    #modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(4px); z-index: 2000; align-items: center; justify-content: center; padding: 16px; }
+    #modal-overlay.open { display: flex; }
+    #modal { background: var(--ink); border: 1px solid rgba(255,255,255,.12); border-radius: 18px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+    .modal-header { padding: 20px 20px 0; display: flex; align-items: center; justify-content: space-between; }
+    .modal-header h2 { font-family: "Playfair Display", serif; font-size: 1.1rem; color: var(--cream); }
+    .modal-close { background: rgba(255,255,255,.08); border: none; color: var(--cream); border-radius: 8px; width: 32px; height: 32px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+    .modal-close:hover { background: rgba(255,255,255,.15); }
+    .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: .72rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: rgba(245,239,230,.45); }
+    .field input, .field select, .field textarea {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+      border-radius: 9px; color: var(--cream); font-family: "DM Sans", sans-serif;
+      font-size: .88rem; padding: 10px 12px; outline: none; transition: border-color .15s;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
+    .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+    .field select option { background: var(--ink); }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field-hint { font-size: .7rem; color: rgba(245,239,230,.3); margin-top: 2px; }
+    .modal-footer { padding: 0 20px 20px; display: flex; gap: 10px; }
+    .btn-cancel { flex: 1; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; color: var(--cream); font-family: "DM Sans", sans-serif; font-size: .85rem; font-weight: 500; padding: 11px; cursor: pointer; touch-action: manipulation; }
+    .btn-cancel:hover { background: rgba(255,255,255,.12); }
+    .btn-save { flex: 2; background: var(--terracotta); border: none; border-radius: 10px; color: #fff; font-family: "DM Sans", sans-serif; font-size: .85rem; font-weight: 600; padding: 11px; cursor: pointer; touch-action: manipulation; transition: background .15s; }
+    .btn-save:hover { background: #d97a4a; }
+
+    /* ── Toast ── */
+    #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); z-index: 3000; background: rgba(15,25,35,.95); border: 1px solid rgba(255,255,255,.12); border-radius: 99px; padding: 8px 20px; font-size: .8rem; color: var(--cream); opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; white-space: nowrap; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.success { border-color: rgba(45,155,90,.4); color: #6dca92; }
+    #toast.error { border-color: rgba(194,106,61,.4); color: #e8926a; }
+
+    /* ═══ MOBILE ═══ */
+    @media (max-width: 768px) {
+      :root { --header-h: 52px; }
+      #app { grid-template-columns: 1fr; grid-template-rows: var(--header-h) 1fr; position: fixed; inset: 0; }
+      header { padding: 0 12px; }
+      .header-tagline { display: none; }
+      header h1 { font-size: 1rem; }
+      .btn-icon span.btn-label { display: none; }
+      .btn-icon { padding: 7px 9px; }
+      #map { grid-column: 1; grid-row: 2; }
+      #sidebar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; border-right: none; border-top: 1px solid rgba(255,255,255,.1); border-radius: 18px 18px 0 0; box-shadow: 0 -8px 40px rgba(0,0,0,.5); height: calc(100vh - var(--header-h)); transform: translateY(calc(100% - var(--sheet-peek))); transition: transform .35s cubic-bezier(.32,.72,0,1); overflow: hidden; }
+      #sidebar.open { transform: translateY(0); }
+      #sheet-handle { display: flex; flex-direction: column; align-items: center; padding: 10px 0 6px; cursor: pointer; flex-shrink: 0; touch-action: none; user-select: none; }
+      #sheet-handle .handle-bar { width: 36px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.2); margin-bottom: 6px; }
+      #sheet-handle .handle-label { font-size: .72rem; color: rgba(245,239,230,.45); letter-spacing: .08em; text-transform: uppercase; }
+      #layer-toggle { top: 10px; right: 10px; }
+      .layer-btn { font-size: .68rem; padding: 5px 10px; }
+      #counter { bottom: calc(var(--sheet-peek) + 10px); font-size: .72rem; padding: 6px 14px; }
+      .leaflet-control-zoom a { width: 40px !important; height: 40px !important; line-height: 40px !important; font-size: 1.2rem !important; }
+      .poi-card { padding: 11px 12px; margin-bottom: 4px; }
+      .poi-name { font-size: .9rem; }
+      .filter-btn { padding: 7px 14px; font-size: .75rem; }
+      .leaflet-popup-content { width: min(280px, calc(100vw - 48px)) !important; }
+      .poi-list { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+      .filters { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; padding: 10px 14px; }
+      .filters::-webkit-scrollbar { display: none; }
+      #toast { bottom: calc(var(--sheet-peek) + 16px); }
+    }
+    #sheet-handle { display: none; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <div class="logo-dot"></div>
+    <h1>Corse · <span>Mes Favoris</span></h1>
+    <div class="header-actions">
+      <button class="btn-icon" id="btn-load-csv" title="Charger un CSV">📂 <span class="btn-label">Charger</span></button>
+      <button class="btn-icon" id="btn-save-csv" title="Télécharger le CSV">💾 <span class="btn-label">Exporter</span></button>
+      <button class="btn-icon primary" id="btn-add-poi" title="Ajouter un lieu">➕ <span class="btn-label">Ajouter</span></button>
+    </div>
+  </header>
+
+  <aside id="sidebar">
+    <div id="sheet-handle">
+      <div class="handle-bar"></div>
+      <span class="handle-label" id="handle-label">▲ Voir les lieux</span>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="poi-list" id="poi-list"></div>
+  </aside>
+
+  <div id="map">
+    <div id="layer-toggle">
+      <button class="layer-btn active" id="btn-satellite">🛰 Satellite</button>
+      <button class="layer-btn" id="btn-plan">🗺 Plan</button>
+    </div>
+    <div id="counter"></div>
+  </div>
+
+</div>
+
+<!-- Modal ajout POI -->
+<div id="modal-overlay">
+  <div id="modal">
+    <div class="modal-header">
+      <h2>Ajouter un lieu</h2>
+      <button class="modal-close" id="modal-close-btn">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Nom du lieu *</label>
+        <input type="text" id="poi-name-input" placeholder="Ex: Plage de Palombaggia" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label>Catégorie *</label>
+        <select id="poi-cat-input">
+          <option value="plage">🏖 Plage</option>
+          <option value="restaurant">🍽 Restaurant</option>
+          <option value="randonnee">🥾 Randonnée</option>
+          <option value="hebergement">🏡 Hébergement</option>
+          <option value="domaine">🍷 Domaine</option>
+          <option value="panorama">📸 Panorama</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Latitude *</label>
+          <input type="number" id="poi-lat-input" placeholder="41.5235" step="0.0001" />
+          <span class="field-hint">Ex: 41.5235</span>
+        </div>
+        <div class="field">
+          <label>Longitude *</label>
+          <input type="number" id="poi-lng-input" placeholder="9.0108" step="0.0001" />
+          <span class="field-hint">Ex: 9.0108</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea id="poi-desc-input" placeholder="Quelques mots sur ce lieu..."></textarea>
+      </div>
+      <p class="field-hint" style="color:rgba(245,239,230,.25)">💡 Astuce : copiez les coordonnées depuis Google Maps (clic droit sur la carte)</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="modal-cancel-btn">Annuler</button>
+      <button class="btn-save" id="modal-save-btn">Ajouter sur la carte</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ════════════════════════════════
+   DONNÉES — points par défaut
+   ════════════════════════════════ */
+const CATEGORIES = {
+  hebergement: { label: 'Hébergement', color: '#d4a85a', bg: 'rgba(212,168,90,.18)',  emoji: '🏡' },
+  plage:       { label: 'Plages',      color: '#1a9fd4', bg: 'rgba(26,159,212,.18)',  emoji: '🏖' },
+  restaurant:  { label: 'Restaurants', color: '#c26a3d', bg: 'rgba(194,106,61,.18)',  emoji: '🍽' },
+  randonnee:   { label: 'Randonnée',   color: '#2d9b5a', bg: 'rgba(45,155,90,.18)',   emoji: '🥾' },
+  panorama:    { label: 'Panoramas',   color: '#9b5ac2', bg: 'rgba(155,90,194,.18)',  emoji: '📸' },
+  domaine:     { label: 'Domaines',    color: '#8b3a3a', bg: 'rgba(139,58,58,.18)',   emoji: '🍷' },
+};
+
+let POINTS = []; // chargés depuis l'API au démarrage
+const POINTS_DEFAULT = [
+  { id:1,  name: 'Villa Corsu',                         category: 'hebergement', lat: 41.5235,  lng: 9.0108,  description: "Airbnb · 8 Lotissement Susini, Monacia d'Aullène — Grand Sud Corse, 20171." },
+  { id:2,  name: 'Sentier du Patrimoine — I Stritonni', category: 'randonnee',   lat: 41.5109,  lng: 9.0069,  description: "Boucle 4 km · ~2h · Facile. Orii mésolithiques, moulins en pierre sèche, terrasses agricoles. Départ à l'entrée du village." },
+  { id:3,  name: 'Plage de Mucchiu Biancu',             category: 'plage',       lat: 41.48929, lng: 8.96662, description: "Plage sauvage et préservée entre la forêt de Funtanaccia et la pointe de Mucchiu Biancu. Dunes, maquis blanc, cadre naturel intact. Accès par le sentier du littoral depuis Furnellu." },
+  { id:4,  name: 'Plage de San Giovanni',               category: 'plage',       lat: 41.46134, lng: 9.05004, description: "Plage sauvage de Pianottoli-Caldarello, peu fréquentée et préservée. Sable doré, eaux cristallines, idéale pour le snorkeling. Tour génoise de Caldarello à portée de marche. Dans la Réserve naturelle des Bouches de Bonifacio." },
+  { id:5,  name: 'Domaine de Saparale',                 category: 'domaine',     lat: 41.6418,  lng: 8.9275,  description: "Domaine viticole d'exception du XIXe siècle, vallée de l'Ortolo. Vins AOC Sartène (rouge, blanc, rosé), caveau de dégustation, hôtel-hameau de luxe 4★ et restaurant. Au pied du massif de Cagna." },
+  { id:6,  name: 'Le Cabanon Bleu',                     category: 'restaurant',  lat: 41.6435,  lng: 9.3198,  description: "Restaurant de plage confidentiel sur la baie de Saint-Cyprien. Cuisine corse simple et raffinée, tartare de thon rouge signature du chef. Ouvert fin mai–fin septembre. Accès conseillé par la mer (taxi boat gratuit). Sainte-Lucie de Porto-Vecchio." },
+  { id:7,  name: 'Plage de Pinarellu',                  category: 'plage',       lat: 41.68327, lng: 9.37656, description: "Vaste plage de sable blanc longue de 2 km, bordée d'une pinède. Baignade en pente douce, idéale en famille. Vue sur l'île de Pinarellu et sa tour génoise du XVIe siècle. Restaurants les pieds dans l'eau, sports nautiques. Sainte-Lucie de Porto-Vecchio." },
+  { id:8,  name: 'Plage de Saint-Cyprien',              category: 'plage',       lat: 41.63302, lng: 9.34615, description: "Grande plage de sable fin et eau turquoise de la commune de Lecci. Zone sud animée avec restaurants et sports nautiques, zone nord sauvage le long de l'étang d'Arasu. Tour génoise, baignade surveillée en été. À 11 km de Porto-Vecchio." },
+  { id:9,  name: "Plage d'Arbitru",                     category: 'plage',       lat: 41.47864, lng: 9.01723, description: "Plage sauvage et désertique de Pianottoli-Caldarello, au fond d'une anse bien abritée. Sable blanc extra-fin, eau limpide. Accès difficile en voiture (piste), mieux par le sentier des Bruzzi (~1h15 à pied). Réserve naturelle des Bouches de Bonifacio." },
+  { id:10, name: 'Auberge La Pergola',                  category: 'restaurant',  lat: 41.5197,  lng: 9.0118,  description: "Auberge et restaurant de spécialités corses au coeur de Monacia d'Aullène. Cuisine familiale et généreuse — charcuterie, sanglier, pâtes aux fruits de mer. Note 4.4/5. Quartier Rotondolo, place de l'église." },
+  { id:11, name: "Chemin de la Tour — Torra d'Ulmetu",  category: 'randonnee',   lat: 41.4752,  lng: 8.9843,  description: "Sentier côtier facile depuis la plage de Furnellu jusqu'à la tour génoise d'Olmeto (XVIe s.). Vue remarquable sur le village de Monacia, l'Omu di Cagna et les criques sauvages. Étang classé espace remarquable. Accessible en famille." },
+  { id:12, name: 'Plage de Carataggio',                 category: 'plage',       lat: 41.5747,  lng: 9.34639, description: "Plage sauvage et peu fréquentée, accessible à pied depuis la côte de Sainte-Lucie de Porto-Vecchio. Sable fin, eaux cristallines, cadre naturel préservé." },
+]; // fin POINTS_DEFAULT
+
+/* ════════════════════════════════
+   CONFIG API — adaptez l'URL si besoin
+   ════════════════════════════════ */
+const API = 'poi.php'; // même dossier que la carte
+
+/* ════════════════════════════════
+   CARTE
+   ════════════════════════════════ */
+const map = L.map('map', { center: [41.58, 9.12], zoom: 9, zoomControl: true, tap: true });
+map.zoomControl.setPosition('bottomright');
+
+const TILES = {
+  satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles © Esri', maxZoom: 19 }),
+  plan:      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', maxZoom: 19 }),
+};
+TILES.satellite.addTo(map);
+let activeLayer = 'satellite';
+
+document.getElementById('btn-satellite').addEventListener('click', () => switchLayer('satellite'));
+document.getElementById('btn-plan').addEventListener('click', () => switchLayer('plan'));
+function switchLayer(name) {
+  map.removeLayer(TILES[activeLayer]); TILES[name].addTo(map); activeLayer = name;
+  document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + name).classList.add('active');
+}
+
+/* ════════════════════════════════
+   BOTTOM SHEET MOBILE
+   ════════════════════════════════ */
+const sidebar = document.getElementById('sidebar');
+const handle  = document.getElementById('sheet-handle');
+const handleLbl = document.getElementById('handle-label');
+let sheetOpen = false;
+function isMobile() { return window.innerWidth <= 768; }
+function setSheet(open) {
+  sheetOpen = open;
+  sidebar.classList.toggle('open', open);
+  if (handleLbl) handleLbl.textContent = open ? '▼ Fermer' : '▲ Voir les lieux';
+  if (open) map.invalidateSize();
+}
+if (handle) {
+  handle.addEventListener('click', () => { if (isMobile()) setSheet(!sheetOpen); });
+  let startY = 0;
+  handle.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+  handle.addEventListener('touchend',   e => { const dy = e.changedTouches[0].clientY - startY; if (Math.abs(dy) > 30) setSheet(dy < 0); }, { passive: true });
+}
+map.on('click',     () => { if (isMobile() && sheetOpen) setSheet(false); });
+map.on('dragstart', () => { if (isMobile() && sheetOpen) setSheet(false); });
+window.addEventListener('resize', () => map.invalidateSize());
+
+/* ════════════════════════════════
+   FILTRES & LISTE
+   ════════════════════════════════ */
+let activeFilter = 'all';
+const markers = {};
+
+function buildFilters() {
+  const wrap = document.getElementById('filters');
+  wrap.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-btn active'; allBtn.textContent = 'Tous'; allBtn.dataset.cat = 'all';
+  allBtn.addEventListener('click', () => setFilter('all'));
+  wrap.appendChild(allBtn);
+  [...new Set(POINTS.map(p => p.category))].forEach(cat => {
+    const c = CATEGORIES[cat]; if (!c) return;
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn'; btn.innerHTML = c.emoji + ' ' + c.label; btn.dataset.cat = cat;
+    btn.addEventListener('click', () => setFilter(cat));
+    wrap.appendChild(btn);
+  });
+}
+function setFilter(cat) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  renderList(); updateMarkers(); updateCounter();
+}
+function renderList() {
+  const list = document.getElementById('poi-list');
+  const filtered = POINTS.filter(p => activeFilter === 'all' || p.category === activeFilter);
+  list.innerHTML = '';
+  if (!filtered.length) { list.innerHTML = '<div class="empty-state">Aucun point dans cette catégorie.</div>'; return; }
+  filtered.forEach(p => {
+    const c = CATEGORIES[p.category] || {};
+    const card = document.createElement('div');
+    card.className = 'poi-card'; card.dataset.id = p.id;
+    card.innerHTML = '<div class="poi-icon" style="background:' + (c.bg||'#333') + '"><span>' + (c.emoji||'📍') + '</span></div>'
+      + '<div class="poi-info"><div class="poi-name">' + p.name + '</div><div class="poi-cat">' + (c.label||p.category) + '</div></div>'
+      + '<span class="poi-arrow">›</span>';
+    card.addEventListener('click', () => { focusPOI(p); if (isMobile()) setSheet(false); });
+    list.appendChild(card);
+  });
+}
+
+/* ════════════════════════════════
+   MARKERS
+   ════════════════════════════════ */
+function createMarkerIcon(cat) {
+  const c = CATEGORIES[cat] || { color: '#aaa', emoji: '📍' };
+  return L.divIcon({ className: '', html: '<div class="custom-marker" style="background:' + c.color + '"><span>' + c.emoji + '</span></div>', iconSize: [36,36], iconAnchor: [18,36], popupAnchor: [0,-38] });
+}
+function buildPopup(p) {
+  const c = CATEGORIES[p.category] || { label: p.category, color: '#aaa', bg: '#333', emoji: '📍' };
+  return '<div class="custom-popup"><span class="cat-badge" style="background:' + c.bg + ';color:' + c.color + '">' + c.emoji + ' ' + c.label + '</span><h3>' + p.name + '</h3><p>' + p.description + '</p></div>';
+}
+function addMarker(p) {
+  const m = L.marker([p.lat, p.lng], { icon: createMarkerIcon(p.category) }).addTo(map).bindPopup(buildPopup(p), { maxWidth: 280 });
+  m.on('click', () => highlightCard(p.id));
+  markers[p.id] = m;
+}
+function addMarkers() { POINTS.forEach(p => addMarker(p)); }
+function updateMarkers() {
+  POINTS.forEach(p => {
+    const m = markers[p.id]; if (!m) return;
+    const vis = activeFilter === 'all' || p.category === activeFilter;
+    if (vis) m.addTo(map); else m.remove();
+  });
+}
+function focusPOI(p) {
+  map.flyTo([p.lat, p.lng], 14, { duration: 1.2 });
+  setTimeout(() => markers[p.id] && markers[p.id].openPopup(), 1200);
+  highlightCard(p.id);
+}
+function highlightCard(id) {
+  document.querySelectorAll('.poi-card').forEach(c => c.classList.toggle('highlighted', parseInt(c.dataset.id) === id));
+}
+function updateCounter() {
+  const n = activeFilter === 'all' ? POINTS.length : POINTS.filter(p => p.category === activeFilter).length;
+  document.getElementById('counter').innerHTML = '<strong>' + n + '</strong> point' + (n > 1 ? 's' : '') + " d'intérêt";
+}
+
+/* ════════════════════════════════
+   TOAST
+   ════════════════════════════════ */
+let toastTimer;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show ' + (type||'');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+}
+
+/* ════════════════════════════════
+   MODAL AJOUT POI
+   ════════════════════════════════ */
+const overlay = document.getElementById('modal-overlay');
+document.getElementById('btn-add-poi').addEventListener('click', openModal);
+document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+function openModal() { overlay.classList.add('open'); document.getElementById('poi-name-input').focus(); }
+function closeModal() { overlay.classList.remove('open'); resetModal(); }
+function resetModal() {
+  document.getElementById('poi-name-input').value = '';
+  document.getElementById('poi-lat-input').value  = '';
+  document.getElementById('poi-lng-input').value  = '';
+  document.getElementById('poi-desc-input').value = '';
+  document.getElementById('poi-cat-input').value  = 'plage';
+}
+
+document.getElementById('modal-save-btn').addEventListener('click', async () => {
+  const name = document.getElementById('poi-name-input').value.trim();
+  const cat  = document.getElementById('poi-cat-input').value;
+  const lat  = parseFloat(document.getElementById('poi-lat-input').value);
+  const lng  = parseFloat(document.getElementById('poi-lng-input').value);
+  const desc = document.getElementById('poi-desc-input').value.trim();
+  if (!name) { showToast('Veuillez entrer un nom', 'error'); return; }
+  if (isNaN(lat) || isNaN(lng)) { showToast('Coordonnées invalides', 'error'); return; }
+  if (lat < 41 || lat > 43.1 || lng < 8.4 || lng > 9.7) { showToast('Coordonnées hors de Corse ?', 'error'); return; }
+  const newId = Math.max(0, ...POINTS.map(p => p.id)) + 1;
+  const poi = { id: newId, name, category: cat, lat, lng, description: desc || name };
+  // Envoyer au serveur
+  try {
+    const res  = await fetch(API + '?action=add', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(poi) });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Erreur serveur');
+    poi.id = data.id;
+    POINTS.push(poi);
+    addMarker(poi);
+    buildFilters(); renderList(); updateCounter();
+    closeModal();
+    focusPOI(poi);
+    showToast('📍 ' + name + ' ajouté !', 'success');
+  } catch(e) {
+    showToast('Erreur : ' + e.message, 'error');
+  }
+});
+
+/* ════════════════════════════════
+   CSV EXPORT
+   ════════════════════════════════ */
+function toCSV(points) {
+  const esc = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const header = 'id,name,category,lat,lng,description';
+  const rows = points.map(p => [p.id, esc(p.name), p.category, p.lat, p.lng, esc(p.description)].join(','));
+  return header + '\n' + rows.join('\n');
+}
+
+/* ── Export CSV — télécharge depuis le serveur ── */
+document.getElementById('btn-save-csv').addEventListener('click', () => {
+  window.open(API + '?action=export', '_blank');
+});
+
+/* ── Import CSV — envoie chaque ligne au serveur ── */
+document.getElementById('btn-load-csv').addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.csv,text/csv,text/plain';
+  input.addEventListener('change', async () => {
+    if (!input.files[0]) return;
+    try {
+      const text = await input.files[0].text();
+      const lines = text.trim().split('\n');
+      if (lines.length < 2) { showToast('CSV vide', 'error'); return; }
+      let ok = 0, fail = 0;
+      for (const line of lines.slice(1)) {
+        const cols = csvParseLine(line);
+        if (!cols || cols.length < 5) continue;
+        const p = { name: cols[1], category: cols[2], lat: parseFloat(cols[3]), lng: parseFloat(cols[4]), description: cols[5] || '' };
+        try {
+          const r = await fetch(API + '?action=add', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(p) });
+          const j = await r.json();
+          if (j.ok) ok++; else fail++;
+        } catch { fail++; }
+      }
+      await loadPOIsFromAPI();
+      showToast('📂 ' + ok + ' lieux importés' + (fail ? ' (' + fail + ' ignorés)' : ''), ok ? 'success' : 'error');
+    } catch(e) { showToast('Erreur lors du chargement', 'error'); }
+  });
+  input.click();
+});
+
+function csvParseLine(line) {
+  const cols = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+    else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+    else cur += ch;
+  }
+  cols.push(cur);
+  return cols;
+}
+
+/* ════════════════════════════════
+   API — chargement des POI
+   ════════════════════════════════ */
+async function loadPOIsFromAPI() {
+  try {
+    const res  = await fetch(API + '?action=list');
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+    // Supprimer anciens marqueurs
+    POINTS.forEach(p => { if (markers[p.id]) { markers[p.id].remove(); delete markers[p.id]; } });
+    POINTS = data.points.map(p => ({
+      id: parseInt(p.id), name: p.name, category: p.category,
+      lat: parseFloat(p.lat), lng: parseFloat(p.lng), description: p.description || ''
+    }));
+    addMarkers(); buildFilters(); renderList(); updateCounter();
+  } catch(e) {
+    // Si l'API échoue, charger les points par défaut intégrés
+    console.warn('API indisponible, chargement des points par défaut', e);
+    POINTS = POINTS_DEFAULT.slice();
+    addMarkers(); buildFilters(); renderList(); updateCounter();
+    showToast('Mode hors ligne — données locales', '');
+  }
+}
+
+/* ════════════════════════════════
+   BOOT
+   ════════════════════════════════ */
+buildFilters();
+renderList();
+loadPOIsFromAPI();
+updateCounter();
+</script>
+</body>
+</html>
