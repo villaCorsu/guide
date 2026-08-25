@@ -166,6 +166,8 @@ body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--dark);
 
 /* ── LOISIRS ── */
 .loisirs-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+a.loisir-card { text-decoration:none; }
+a.loisir-card:hover { border:1px solid var(--gold); }
 .loisir-card { background:var(--card); border-radius:var(--radius); padding:14px 10px; box-shadow:var(--shadow); text-align:center; }
 .loisir-card:active { transform:scale(.96); }
 .loisir-card .ico { font-size:1.6rem; display:block; margin-bottom:6px; }
@@ -861,15 +863,15 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- ELECTROMENAGER -->
 <div class="section reveal" id="s-electro">
   <div class="section-header">
-    <div class="chip" data-fr="Notices" data-en="Manuals">Notices</div>
+    <div class="chip" data-fr="Manuel Utilisateur" data-en="User Manual">Manuel Utilisateur</div>
     <h2 class="section-title" data-fr="Électro<em>ménager</em>" data-en="Home <em>appliances</em>">Électro<em>ménager</em></h2>
   </div>
   <div class="loisirs-grid">
-    <div class="loisir-card reveal"><span class="ico">🧊</span><h4 data-fr="Réfrigérateur" data-en="Refrigerator">Réfrigérateur</h4></div>
-    <div class="loisir-card reveal"><span class="ico">🍳</span><h4 data-fr="Plaque à induction" data-en="Induction hob">Plaque à induction</h4></div>
-    <div class="loisir-card reveal"><span class="ico">🍽️</span><h4 data-fr="Lave-vaisselle" data-en="Dishwasher">Lave-vaisselle</h4></div>
+    <a class="loisir-card reveal" href="notices/Réfrigirateur_Siemens.pdf" target="_blank"><span class="ico">🧊</span><h4 data-fr="Réfrigérateur" data-en="Refrigerator">Réfrigérateur</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
+    <a class="loisir-card reveal" href="notices/Plaque_Induction_Electrolux.pdf" target="_blank"><span class="ico">🍳</span><h4 data-fr="Plaque à induction" data-en="Induction hob">Plaque à induction</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
+    <a class="loisir-card reveal" href="notices/lave_vaisselle_bosch.pdf" target="_blank"><span class="ico">🍽️</span><h4 data-fr="Lave-vaisselle" data-en="Dishwasher">Lave-vaisselle</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
     <div class="loisir-card reveal"><span class="ico">🔥</span><h4 data-fr="Four" data-en="Oven">Four</h4></div>
-    <div class="loisir-card reveal"><span class="ico">👕</span><h4 data-fr="Lave-linge" data-en="Washing machine">Lave-linge</h4></div>
+    <a class="loisir-card reveal" href="notices/Lave_Linge._samsung.pdf" target="_blank"><span class="ico">👕</span><h4 data-fr="Lave-linge" data-en="Washing machine">Lave-linge</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
     <div class="loisir-card reveal"><span class="ico">📡</span><h4 data-fr="Micro-ondes" data-en="Microwave">Micro-ondes</h4></div>
     <div class="loisir-card reveal"><span class="ico">❄️</span><h4 data-fr="Climatisation" data-en="Air conditioning">Climatisation</h4></div>
     <div class="loisir-card reveal"><span class="ico">📺</span><h4 data-fr="Télévision" data-en="Television">Télévision</h4></div>
