@@ -404,10 +404,14 @@ a.loisir-card:hover { border:1px solid var(--gold); }
 }
 
 /* ── Mobile small (<380px) ── */
+@media(max-width:600px){
+  .logo-video { width:64px; height:64px; }
+  .topbar { height:64px; }
+}
 @media(max-width:380px){
   body { font-size:14px; }
-  .topbar { padding:10px 14px; gap:8px; }
-  .logo-video { width:48px; height:48px; }
+  .topbar { padding:10px 14px; gap:8px; height:56px; }
+  .logo-video { width:56px; height:56px; }
   .logo-text { font-size:.85rem; }
   .section { padding:20px 14px; }
   .villa-intro { padding:20px 14px 16px; }
@@ -870,10 +874,10 @@ document.addEventListener('DOMContentLoaded', function() {
     <a class="loisir-card reveal" href="notices/Réfrigirateur_Siemens.pdf" target="_blank"><span class="ico">🧊</span><h4 data-fr="Réfrigérateur" data-en="Refrigerator">Réfrigérateur</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
     <a class="loisir-card reveal" href="notices/Plaque_Induction_Electrolux.pdf" target="_blank"><span class="ico">🍳</span><h4 data-fr="Plaque à induction" data-en="Induction hob">Plaque à induction</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
     <a class="loisir-card reveal" href="notices/lave_vaisselle_bosch.pdf" target="_blank"><span class="ico">🍽️</span><h4 data-fr="Lave-vaisselle" data-en="Dishwasher">Lave-vaisselle</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
-    <div class="loisir-card reveal"><span class="ico">🔥</span><h4 data-fr="Four" data-en="Oven">Four</h4></div>
+    <a class="loisir-card reveal" href="notices/Four_bosch.pdf" target="_blank"><span class="ico">🔥</span><h4 data-fr="Four" data-en="Oven">Four</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
     <a class="loisir-card reveal" href="notices/Lave_Linge._samsung.pdf" target="_blank"><span class="ico">👕</span><h4 data-fr="Lave-linge" data-en="Washing machine">Lave-linge</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
-    <div class="loisir-card reveal"><span class="ico">📡</span><h4 data-fr="Micro-ondes" data-en="Microwave">Micro-ondes</h4></div>
-    <div class="loisir-card reveal"><span class="ico">❄️</span><h4 data-fr="Climatisation" data-en="Air conditioning">Climatisation</h4></div>
+    <a class="loisir-card reveal" href="notices/Microwave_LG.pdf" target="_blank"><span class="ico">📡</span><h4 data-fr="Micro-ondes" data-en="Microwave">Micro-ondes</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
+    <a class="loisir-card reveal" href="notices/Clim_Daikin.pdf" target="_blank"><span class="ico">❄️</span><h4 data-fr="Climatisation" data-en="Air conditioning">Climatisation</h4><p style="font-size:.65rem;color:var(--gold);margin-top:4px;">📄 Notice</p></a>
     <div class="loisir-card reveal"><span class="ico">📺</span><h4 data-fr="Télévision" data-en="Television">Télévision</h4></div>
     <div class="loisir-card reveal"><span class="ico">📶</span><h4 data-fr="WiFi Extender" data-en="WiFi Extender">WiFi Extender</h4></div>
     <div class="loisir-card reveal"><span class="ico">🌐</span><h4 data-fr="SFR Box" data-en="SFR Box">SFR Box</h4></div>
