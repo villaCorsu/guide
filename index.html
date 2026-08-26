@@ -35,13 +35,17 @@ body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--dark);
 /* ── TOPBAR ── */
 .topbar {
   background:#ffffff;
-  display:flex; align-items:center; justify-content:center;
-  padding:0;
-  height:242px;
-  overflow:hidden;
+  display:flex; align-items:center; justify-content:flex-start;
+  gap:16px; padding:0 16px;
+  height:242px; overflow:hidden;
+}
+.topbar-title {
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem; font-style:italic;
+  color:var(--dark); letter-spacing:.08em;
 }
 .lang-toggle {
-  position:absolute; top:8px; right:12px;
+  margin-left:auto;
 }
 .topbar-logo { display:none; }
 
